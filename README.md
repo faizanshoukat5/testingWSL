@@ -28,4 +28,4 @@
  ---
 
  Notes: only the files above were changed as part of this hardening pass. Changes focused on three goals: remove SQL injection vectors (prepared statements), centralize and validate file uploads, and eliminate runtime PHP warnings / XSS by adding null‑safety and escaping.  
- If you want, I can produce a follow-up README entry that shows the exact commits or diff hunks for each file.
+ 

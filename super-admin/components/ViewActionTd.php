@@ -1,0 +1,1 @@
+<button type="button" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="View" onclick="ViewClients(<?php echo $row['client_id'];?>);"><i class="mdi mdi-eye"></i></button>

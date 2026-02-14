@@ -1,0 +1,44 @@
+# Created By: Safyan Safdar
+# Dated: Dec 21, 2023
+# Purpose: HTACCESS
+# Project: Management Software
+# Denying Directory Access
+
+RewriteEngine on
+# Basic links --------------------------------------------------------
+RewriteRule ^dashboard$ index.php?page=Dashboard&page=Dashboard [QSA,NC,L]
+RewriteRule ^change-password$ index.php?page=Change_password&page=Change_password [QSA,NC,L]
+RewriteRule ^profile-setting$ index.php?page=Profile_setting&page=Profile_setting [QSA,NC,L]
+RewriteRule ^log-out$ index.php?page=Logout&page=Logout [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# Employee -----------------------------------------
+RewriteRule ^employee$ index.php?page=Employee&page=Employee [QSA,NC,L]
+RewriteRule ^intake-year$ index.php?page=Intake_year&page=Intake_year [QSA,NC,L]
+# ----------------------------------------------------
+# Payments --------------------------------------------------------
+RewriteRule ^payments$ index.php?page=Payments&page=Payments [QSA,NC,L]
+RewriteRule ^clients$ index.php?page=Clients&page=Clients [QSA,NC,L]
+RewriteRule ^admission-documents$ index.php?page=Admission_documents&page=Admission_documents [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# Filters --------------------------------------------------------
+RewriteRule ^payments-confirm$ index.php?page=Payments_confirm&page=Payments_confirm [QSA,NC,L]
+RewriteRule ^payments-not-confirm$ index.php?page=Payments_not_confirm&page=Payments_not_confirm [QSA,NC,L]
+
+RewriteRule ^acknowlegement-confirm$ index.php?page=Acknowlegement_confirm&page=Acknowlegement_confirm [QSA,NC,L]
+RewriteRule ^acknowlegement-not-confirm$ index.php?page=Acknowlegement_not_confirm&page=Acknowlegement_not_confirm [QSA,NC,L]
+
+RewriteRule ^programs-confirm$ index.php?page=Programs_confirm&page=Programs_confirm [QSA,NC,L]
+RewriteRule ^programs-not-confirm$ index.php?page=Programs_not_confirm&page=Programs_not_confirm [QSA,NC,L]
+
+RewriteRule ^documents-complete$ index.php?page=Documents_complete&page=Documents_complete [QSA,NC,L]
+RewriteRule ^documents-not-complete$ index.php?page=Documents_not_complete&page=Documents_not_complete [QSA,NC,L]
+
+RewriteRule ^clients-case$ index.php?page=Clients_case&page=Clients_case [QSA,NC,L]
+RewriteRule ^clients-change-country$ index.php?page=Clients_change_country&page=Clients_change_country [QSA,NC,L]
+
+RewriteRule ^clients-case-status$ index.php?page=Clients_case_status&page=Clients_case_status [QSA,NC,L]
+RewriteRule ^clients-convert-status$ index.php?page=Clients_convert_status&page=Clients_convert_status [QSA,NC,L]
+RewriteRule ^clients-degree-status$ index.php?page=Clients_degree_status&page=Clients_degree_status [QSA,NC,L]
+# ------------------------------------------------------------------

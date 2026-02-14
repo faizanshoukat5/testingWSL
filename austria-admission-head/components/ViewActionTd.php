@@ -1,0 +1,2 @@
+<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Track this Client" onclick="ViewClients(<?php echo $row['client_id'];?>);"><i class="mdi mdi-eye"></i></button> <br>
+<button type="button" class="btn btn-outline-pink btn-sm mt-1" data-toggle="tooltip" data-placement="top" title="Change Intake Year" onclick="changeIntakeYear(<?php echo $row['client_id'];?>);"><i class="mdi mdi-arrow-left-right-bold"></i></button> 

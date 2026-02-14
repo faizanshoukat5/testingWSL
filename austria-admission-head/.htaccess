@@ -1,0 +1,45 @@
+# Created By: Muhammad Safdar
+# Dated: Jan 01, 2024
+# Purpose: HTACCESS
+# Project: WSL Consultants CMS
+# Denying Directory Access
+
+RewriteEngine on
+# Basic links --------------------------------------------------------
+RewriteRule ^dashboard$ index.php?page=Dashboard&page=Dashboard [QSA,NC,L]
+RewriteRule ^change-password$ index.php?page=Change_password&page=Change_password [QSA,NC,L]
+RewriteRule ^profile-setting$ index.php?page=Profile_setting&page=Profile_setting [QSA,NC,L]
+RewriteRule ^log-out$ index.php?page=Logout&page=Logout [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# All Clients ------------------------------------------------------
+RewriteRule ^all-clients$ index.php?page=All_clients&page=All_clients [QSA,NC,L]
+RewriteRule ^assign-programs$ index.php?page=Assign_programs&page=Assign_programs [QSA,NC,L]
+RewriteRule ^apply-programs$ index.php?page=Apply_programs&page=Apply_programs [QSA,NC,L]
+RewriteRule ^sops-programs$ index.php?page=SOPs_programs&page=SOPs_programs [QSA,NC,L]
+
+RewriteRule ^processing-team$ index.php?page=Processing_team&page=Processing_team [QSA,NC,L]
+RewriteRule ^sops-team$ index.php?page=Sops_team&page=Sops_team [QSA,NC,L]
+RewriteRule ^admission-documents$ index.php?page=Admission_documents&page=Admission_documents [QSA,NC,L]
+
+RewriteRule ^direct-apply$ index.php?page=Direct_apply&page=Direct_apply [QSA,NC,L]
+RewriteRule ^courier-apply$ index.php?page=Courier_apply&page=Courier_apply [QSA,NC,L]
+
+# Add FAQs Section --------------------------------------------------------
+RewriteRule ^faqs-section$ index.php?page=FAQs_section&page=FAQs_section [QSA,NC,L]
+RewriteRule ^universities-requirements$ index.php?page=Universities_requirements&page=Universities_requirements [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# Filters --------------------------------------------------------
+RewriteRule ^bachelor-universities$ index.php?page=Bachelor_universities&page=Bachelor_universities [QSA,NC,L]
+RewriteRule ^master-universities$ index.php?page=Master_universities&page=Master_universities [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# Visa Process --------------------------------------------------------
+RewriteRule ^visa-process$ index.php?page=Visa_process&page=Visa_process [QSA,NC,L]
+RewriteRule ^after-visa-process$ index.php?page=After_visa_process&page=After_visa_process [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# All Clients ------------------------------------------------------
+RewriteRule ^universities-and-programs$ index.php?page=Universities_and_programs&page=Universities_and_programs [QSA,NC,L]
+RewriteRule ^clients-previous-degree$ index.php?page=Clients_previous_degree&page=Clients_previous_degree [QSA,NC,L]

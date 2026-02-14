@@ -1,0 +1,449 @@
+<script type="text/javascript">
+
+	function reinitializeScripts() {
+		// Reinitialize tooltips
+		$('[data-toggle="tooltip"]').tooltip({ html:true});
+		// Synchronize scroll behavior, if applicable
+		const tableContent = document.getElementById('table-container');
+		const bottomScrollbarContent = document.getElementById('bottom-scrollbar-content');
+		if (tableContent && bottomScrollbarContent) {
+			tableContent.addEventListener('scroll', () => {
+				bottomScrollbarContent.scrollLeft = tableContent.scrollLeft;
+			});
+			bottomScrollbarContent.addEventListener('scroll', () => {
+				tableContent.scrollLeft = bottomScrollbarContent.scrollLeft;
+			});
+		}
+	}
+	function engFunProfAcc(id) {
+		var engCheck = $("#engProAccept"+id);
+		if (engCheck.is(":checked")) {
+			$("#hidden_engProAccept"+id).val('1');
+			$("#proIELTSPTE"+id).prop('readonly', true);
+			$("#proIELTSPTE"+id).val('');
+		} else {
+			$("#hidden_engProAccept"+id).val('0');
+			$("#proIELTSPTE"+id).prop('readonly', false);
+			$("#proIELTSPTE"+id).val('');
+		}
+	}
+
+	function requiredSOP(id) {
+		var sopReq = $("#sopRequired"+id);
+		if (sopReq.is(":checked")) {
+			$("#hidden_sopRequired"+id).val('1');
+			$("#showNoteSOP"+id).prop('readonly', false);
+			$("#showNoteSOP"+id).val('');
+		} else {
+			$("#hidden_sopRequired"+id).val('0');
+			$("#showNoteSOP"+id).prop('readonly', true);
+			$("#showNoteSOP"+id).val('');
+		}
+	}
+	function funDegreeRequired(id){
+		var dreq = $("#degreeRequired"+id);
+		if (dreq.is(":checked")) {
+			$("#hidden_degreeRequired"+id).val('1');
+		} else {
+			$("#hidden_degreeRequired"+id).val('0');
+		}
+	}
+
+	function funRecommendation(id){
+		var dreq = $("#recommendation"+id);
+		if (dreq.is(":checked")) {
+			$("#hidden_recommendation"+id).val('1');
+		} else {
+			$("#hidden_recommendation"+id).val('0');
+		}
+	}
+
+	function funNormalCV(id){
+		var dreq = $("#normalCV"+id);
+		if (dreq.is(":checked")) {
+			$("#hidden_normalCV"+id).val('1');
+		} else {
+			$("#hidden_normalCV"+id).val('0');
+		}
+	}
+
+	function funEuropassCV(id){
+		var dreq = $("#europassCV"+id);
+		if (dreq.is(":checked")) {
+			$("#hidden_europassCV"+id).val('1');
+		} else {
+			$("#hidden_europassCV"+id).val('0');
+		}
+	}
+	function funlegDocument(id){
+		var dreq = $("#legDocument"+id);
+		if (dreq.is(":checked")) {
+			$("#hidden_legDocument"+id).val('1');
+		} else {
+			$("#hidden_legDocument"+id).val('0');
+		}
+	}
+
+	function fungmatGreTest(id){
+		var dreq = $("#gmatGreTest"+id);
+		if (dreq.is(":checked")) {
+			$("#hidden_gmatGreTest"+id).val('1');
+		} else {
+			$("#hidden_gmatGreTest"+id).val('0');
+		}
+	}
+
+	function funentryTest(id){
+		var dreq = $("#entryTest"+id);
+		if (dreq.is(":checked")) {
+			$("#hidden_entryTest"+id).val('1');
+		} else {
+			$("#hidden_entryTest"+id).val('0');
+		}
+	}
+
+	function funTestInterview(id){
+		var tInt = $("#textInterview"+id);
+		if (tInt.is(":checked")) {
+			$("#hidden_textInterview"+id).val('1');
+		} else {
+			$("#hidden_textInterview"+id).val('0');
+		}
+	}
+
+	function delRow(id) {
+		Swal.fire({
+			title: 'Are you sure?',
+			text: "Do you really want to delete this Program?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, delete it!',
+			cancelButtonText: 'Cancel'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$("#row" + id).remove();
+				Swal.fire(
+					'Deleted!',
+					'The Program has been removed.',
+					'success'
+					)
+			}
+		});
+	};
+	function addNewPrograms(id){
+		var i = $("#varInputID").val();
+		var approw = `
+		<div class="row" id="row${i}"> 
+			<div class="form-group col-md-3"> 
+				<label class="form-label">Program Name <span class="text-danger">*</span></label> 
+				<input type="text" name="programName[]" class="form-control" required="required" autocomplete="off" placeholder="Enter Program Name"> 
+			</div> 
+			<div class="col-md-9"> 
+				<div class="row">
+					<div class="form-group col-md-3"> 
+						<label class="form-label">CGPA / Percentage <span class="text-danger">*</span></label> 
+						<input type="text" name="proCGPAPer[]" class="form-control" required="required" autocomplete="off" placeholder="Enter CGPA / Percentage"> 
+					</div>
+					<div class="form-group col-md-3"> 
+						<label class="form-label">Language of Instruction <span class="text-danger">*</span></label> 
+						<select class="form-control" name="prolanguageInstruction[]" required="required"> 
+							<option selected value disabled>--- Select Instruction ---</option> 
+							<option value="English">English</option> 
+							<option value="German">German </option> 
+							<option value="English and German">English and German </option> 
+						</select> 
+					</div> 
+					<div class="form-group col-md-3"> 
+						<label class="form-label">Program Application Fee <span class="text-danger">*</span></label> 
+						<input type="text" name="proAppFee[]" class="form-control" required="required"  autocomplete="off" placeholder="Enter Application Fee"> 
+					</div> 
+					<div class="form-group col-md-3"> 
+						<label class="form-label">Program Tuition Fee </label> 
+						<input type="text" name="proTuitionFee[]" class="form-control"autocomplete="off" placeholder="Enter Program Tuition Fee"> 
+					</div> 
+				</div> 
+			</div> 
+			<div class="form-group col-md-4"> 
+				<label class="form-label">Language Requirement</label><br> 
+				<div class="checkbox checkbox-success form-check-inline"> 
+					<input type="hidden" id="hidden_engProAccept${i}" name="proEngProfAccept[]" value="0"> 
+					<input type="checkbox" id="engProAccept${i}" name="" onclick="engFunProfAcc(${i});"> 
+					<label for="engProAccept${i}"> English Proficiency Letter Acceptable </label> 
+				</div> 
+			</div> 
+			<div class="form-group col-md-3"> 
+				<label class="form-label">IELTS / PTE / Duo lingo / Other</label> 
+				<input type="text" name="proIELTSPTE[]" class="form-control" autocomplete="off" placeholder="Enter IELTS / PTE / Duo lingo / Other" id="proIELTSPTE${i}"> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<label class="form-label">SOP</label><br> 
+				<div class="checkbox checkbox-success form-check-inline"> 
+					<input type="hidden" id="hidden_sopRequired${i}" name="proSOPRequired[]" value="0"> 
+					<input type="checkbox" id="sopRequired${i}" name="" onclick="requiredSOP(${i});"> 
+					<label for="sopRequired${i}"> SOP Required </label> 
+				</div> 
+			</div> 
+			<div class="form-group col-md-3"> 
+			<label class="form-label">SOP Note</label> 
+			<input type="text" name="proSOPNote[]" class="form-control" autocomplete="off" placeholder="Enter SOP Note" readonly="" id="showNoteSOP${i}"> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<div class="checkbox checkbox-success form-check-inline mt-2"> 
+					<input type="hidden" id="hidden_degreeRequired${i}" name="proDegreeRequired[]" value="0"> 
+					<input type="checkbox" id="degreeRequired${i}" name="" onclick="funDegreeRequired(${i});"> 
+					<label for="degreeRequired${i}"> Degree Required </label>
+				</div> 
+				<div class="checkbox checkbox-success form-check-inline mt-2"> 
+					<input type="hidden" id="hidden_recommendation${i}" name="proRecommendation[]" value="0"> 
+					<input type="checkbox" id="recommendation${i}" name="" onclick="funRecommendation(${i});"> 
+					<label for="recommendation${i}"> Recommendation </label> 
+				</div> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<div class="checkbox checkbox-success form-check-inline mt-2"> 
+					<input type="hidden" id="hidden_normalCV${i}" name="proNormalCV[]" value="0"> 
+					<input type="checkbox" id="normalCV${i}" name="" onclick="funNormalCV(${i});"> 
+					<label for="normalCV${i}"> Normal CV </label> 
+				</div> 
+				<div class="checkbox checkbox-success form-check-inline mt-2"> 
+					<input type="hidden" id="hidden_europassCV${i}" name="proEuropassCV[]" value="0"> 
+					<input type="checkbox" id="europassCV${i}" name="" onclick="funEuropassCV(${i});"> 
+					<label for="europassCV${i}"> Europass CV </label> 
+				</div> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<div class="checkbox checkbox-success form-check-inline mt-2"> 
+					<input type="hidden" id="hidden_gmatGreTest${i}" name="progmatGreTest[]" value="0"> 
+					<input type="checkbox" id="gmatGreTest${i}" name="" onclick="fungmatGreTest(${i});"> 
+					<label for="gmatGreTest${i}"> GMAT/ GRE Test </label> 
+				</div> 
+				<div class="checkbox checkbox-success form-check-inline mt-2"> 
+					<input type="hidden" id="hidden_entryTest${i}" name="proentryTest[]" value="0"> 
+					<input type="checkbox" id="entryTest${i}" name="" onclick="funentryTest(${i});"> 
+					<label for="entryTest${i}"> Entry Test </label> 
+				</div> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<div class="checkbox checkbox-success form-check-inline mt-2"> 
+					<input type="hidden" id="hidden_textInterview${i}" name="protextInterview[]" value="0"> 
+					<input type="checkbox" id="textInterview${i}" name="" onclick="funTestInterview(${i});"> 
+					<label for="textInterview${i}"> Any Interview Required </label> 
+				</div> 
+				<div class="checkbox checkbox-success form-check-inline mt-2"> 
+					<input type="hidden" id="hidden_legDocument${i}" name="prolegDocument[]" value="0"> 
+					<input type="checkbox" id="legDocument${i}" name="" onclick="funlegDocument(${i});"> 
+					<label for="legDocument${i}"> Apply with legalized documents </label> 
+				</div>
+			</div> 
+			<div class="form-group col-md-2"> 
+				<label class="form-label">Previous Relevant Degree </label> 
+				<input type="text" name="propreRelevantDegree[]" class="form-control" autocomplete="off" placeholder="Enter Previous Relevant Degree"> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<label class="form-label">Application Process <span class="text-danger">*</span></label> 
+				<select class="form-control" name="applicationProcess[]" required="required"> 
+					<option selected value disabled>--- Select Application Process ---</option> 
+					<option value="Online">Online</option> 
+					<option value="Courier">Courier </option> 
+					<option value="Online and Courier">Online and Courier </option> 
+				</select> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<label class="form-label">Intake <span class="text-danger">*</span></label> 
+				<select class="form-control" name="proIntake[]" required="required"> 
+					<option selected value disabled>--- Select Intake ---</option> 
+					<option value="March">March</option> 
+					<option value="October">October </option> 
+					<option value="March / October">March / October </option> 
+				</select> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<label class="form-label">Overall Intake <span class="text-danger">*</span></label> 
+				<input type="text" name="proRound[]" class="form-control" required="required" autocomplete="off" placeholder="Enter Intake"> 
+			</div> 
+			<div class="form-group col-md-2"> 
+				<label class="form-label">Current Intake <span class="text-danger">*</span></label> 
+				<input type="text" name="proCurrentRound[]" class="form-control" required="required" autocomplete="off" placeholder="Enter Intake"> 
+			</div> 
+			<div class="form-group col-md-3"> 
+				<label class="form-label">Current Intake Opening Date </label> 
+				<input type="date" name="openingDate[]" class="form-control" autocomplete="off"> 
+			</div> 
+			<div class="form-group col-md-3"> 
+				<label class="form-label">Current Intake Actual Deadline </label> 
+				<input type="date" name="actualDeadline[]" class="form-control" autocomplete="off"> 
+			</div>
+			<div class="form-group col-md-2">
+				<label class="form-label">Next Intake Opening Date <span class="text-danger">*</span></label>
+				<input type="date" name="nextOpenDate[]" class="form-control" required="required" autocomplete="off">
+			</div>
+			<!-- Degree Acceptable -->
+			<div class='form-group col-md-3'>
+				<label class='form-label'>Degree Acceptable</label>
+				<select name='degreeAcceptable[]' class='form-control'>
+					<option value=''>--- Select Degree Acceptable ---</option>
+					<option value='Bachelor 4 Years'>Bachelor 4 Years</option>
+					<option value='2 Years Bachelor + 2 Years Master'>2 Years Bachelor + 2 Years Master</option>
+					<option value='Both'>Both</option>
+				</select>
+			</div>
+			<!-- Previous Degree -->
+			<div class='form-group col-md-7'>
+				<label class='form-label'>Client's Previous Degree</label>
+				<select name='clientPreviousDegree[${i}][]' data-toggle='select3' class='form-control' multiple>
+					<?php 
+					$uniDetails = "SELECT pre_degree_name FROM previous_client_degrees WHERE status='1' AND close='1' ORDER BY pre_degree_id DESC"; 
+					$uniDetails_ex = mysqli_query($con, $uniDetails); 
+					foreach ($uniDetails_ex as $rowPre) { ?> 
+					<option value='<?php echo $rowPre['pre_degree_name'];?>'><?php echo ucwords($rowPre['pre_degree_name']);?></option> 
+					<?php } ?>
+				</select>
+			</div>
+		 	<div class="form-group col-md-4"> 
+			 	<label class="form-label">This admission letter is valid for how many intakes? <span class="text-danger">*</span></label> 
+			 	<select class="form-control" name="admissionValid[]" required="required"> 
+				 	<option selected value disabled class="text-center">--- Select admission letter Valid ---</option> 
+				 	<option value="1 intake">1 intake</option> 
+				 	<option value="2 intake">2 intake</option> 
+				 	<option value="3 intake">3 intake</option> 
+			 	</select> 
+		 	</div> 
+		 	<div class="form-group col-md-7"> 
+			 	<label class="form-label">Note for Admission Head </label> 
+			 	<textarea name="proNoteHead[]" class="form-control"></textarea> 
+		 	</div>
+		 	<div class="form-group col-md-1"> 
+			 	<label>Status</label><br> 
+			 	<button type="button" class="btn btn-danger btn-sm" onclick="delRow(${i})"><i class="mdi mdi-trash-can"></i></button> 
+		 	</div> 
+		 </div>
+		 <hr width="100%" style="border: 2px solid black;">`;
+		$("#showNewPrograms").append(approw);
+		$('[data-toggle="select3"]').select2();
+		i++;
+		$("#varInputID").val(i);
+
+	};
+
+	function addProgramsNew(idUni) {
+		var idUni = idUni;
+		var proIntake = $("#proIntake").val();
+		$.ajax({
+			type: "POST",
+			url: "models/addNewProgramState.php",
+			data: {
+				proAddNew : idUni,
+				proIntake : proIntake,
+			},
+			success: function(data){
+				$(".showModalTitle").html('Add Program details');
+				$(".showModalClient").html(data);
+				$("#showModalClient").modal('show');
+			}
+		});
+	};
+
+	function editAddPro(idUni) {
+		var idUni = idUni;
+		var proIntake = $("#proIntake").val();
+		$.ajax({
+			type: "POST",
+			url: "models/addNewProgramState.php",
+			data: {
+				proAddEdit : idUni,
+				proIntake : proIntake,
+			},
+			success: function(data){
+				$(".showModalTitle").html('Update Program details');
+				$(".showModalClient").html(data);
+				$("#showModalClient").modal('show');
+			}
+		});
+	};
+	//del Programs
+	function delC(idUni) {
+		var idUni = idUni;
+		$.ajax({
+			type:"POST",
+			url:"models/addNewProgramState.php",
+			data: 'proAddDel='+idUni,
+			success:function(data) {
+				var rowh = "#"+idUni;
+				$(rowh).remove();
+				Swal.fire(
+					'Deleted!',
+					'Record has been deleted.',
+					'success'
+				)
+			}
+		});
+	};
+
+	// inactive and active full university
+	function activeProC(idAddPro) {
+		var idAddPro = idAddPro;
+		var actPro = $("#actPro"+idAddPro+"").val();
+		$.ajax({
+			type:"POST",
+			url:"models/addNewProgramState.php",
+			data: {
+				idAddPro : idAddPro,
+				actProStatus : actPro,
+			},
+			success:function(data) {
+				if(data=='1'){
+					Swal.fire(
+						'Active!',
+						'Record has been Active.',
+						'success'
+					).then(() => {
+						window.location.reload();
+					});
+				}else{
+					Swal.fire(
+						'InActive!',
+						'Record has been InActive.',
+						'success'
+					).then(() => {
+						window.location.reload();
+					});
+				}
+			}
+		});
+	};
+	// inactive and active signal program
+	function activeProDetC(idAddDetPro) {
+		var idAddDetPro = idAddDetPro;
+		var actDetPro = $("#actDetPro"+idAddDetPro+"").val();
+		$.ajax({
+			type:"POST",
+			url:"models/addNewProgramState.php",
+			data: {
+				idAddDetPro : idAddDetPro,
+				actDetProStatus : actDetPro,
+			},
+			success:function(data) {
+				if(data=='1'){
+					Swal.fire(
+						'Active!',
+						'Record has been Active.',
+						'success'
+					).then(() => {
+						window.location.reload();
+					});
+				}else{
+					Swal.fire(
+						'InActive!',
+						'Record has been InActive.',
+						'success'
+					).then(() => {
+						window.location.reload();
+					});
+				}
+			}
+		});
+	};
+
+</script>

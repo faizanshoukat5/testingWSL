@@ -1,0 +1,12 @@
+# Created By: Safyan Safdar
+# Dated: Dec 21, 2023
+# Purpose: HTACCESS
+# Project: Management Software
+# Denying Directory Access
+
+RewriteEngine on
+# Login ----------------------------------------------
+RewriteRule ^login$ index.php?page=Login [QSA,NC,L]
+RewriteRule ^forgot-password$ index.php?page=Forgot_password [QSA,NC,L]
+RewriteRule ^update-password$ index.php?page=Update_password [QSA,NC,L]
+# ----------------------------------------------------

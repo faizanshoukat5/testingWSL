@@ -261,10 +261,17 @@ if (isset($_POST['checkUniName'])) {
 
 	$progUniDetails = "SELECT * FROM $gettabName".$_SESSION['dbNo']." WHERE status='1' AND close='1' AND $getuniCol='".$getUniname."' AND $getdegCol='".$getdegtype."'";
 	$progUniDetails_ex = mysqli_query($con, $progUniDetails);
+
+	// DEBUG log request + result count
+	$__dbg_ajax = __DIR__ . '/../../tools/debug_ajax.json';
+	@mkdir(dirname($__dbg_ajax), 0777, true);
+	file_put_contents($__dbg_ajax, json_encode(['ts'=>time(), 'action'=>'checkUniName', 'uni'=>$getUniname, 'deg'=>$getdegtype, 'sql'=>$progUniDetails, 'rows'=> ($progUniDetails_ex ? mysqli_num_rows($progUniDetails_ex) : 0)], JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
+
 	foreach ($progUniDetails_ex as $rowUP) {
 		?>
 		<option value="<?php echo $rowUP[$getprogCol];?>"><?php echo $rowUP[$getprogCol];?></option>
-	<?php } 
+	<?php }
+ 
 }
 // Programm Apply Method
 if (isset($_POST['checkuniSelectName'])) {
@@ -278,6 +285,12 @@ if (isset($_POST['checkuniSelectName'])) {
 
 	$uniSelectPro = "SELECT $uniProgSelectCol, $uniProgramCol from $uniTable".$_SESSION['dbNo']." WHERE close='1' AND status='1' AND $uniNameCol='".$uniSelectName."' AND $degreeNameCol='".$unidegtype."' ";
 	$uniSelectPro_ex = mysqli_query($con,$uniSelectPro);
+
+	// DEBUG log request + result
+	$__dbg_ajax = __DIR__ . '/../../tools/debug_ajax.json';
+	@mkdir(dirname($__dbg_ajax), 0777, true);
+	file_put_contents($__dbg_ajax, json_encode(['ts'=>time(), 'action'=>'checkuniSelectName', 'uni'=>$uniSelectName, 'deg'=>$unidegtype, 'sql'=>$uniSelectPro, 'rows'=> ($uniSelectPro_ex ? mysqli_num_rows($uniSelectPro_ex) : 0)], JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
+
 	if ($uniSelectPro_ex && mysqli_num_rows($uniSelectPro_ex) > 0) {
 		$proRow = mysqli_fetch_assoc($uniSelectPro_ex);
 		echo $uniSelectPro = $proRow[$uniProgSelectCol]." // ".$proRow[$uniProgramCol];

@@ -721,4 +721,14 @@ $uniName = $_GET['university-name'];
 		});
 	};
 
+	// Support 'Other' and hidden-field values when university is selected in Austria
+	function checkOtherAustriaUni(id) {
+		var selectedOption = $("#uniOtherCzechName" + id + " option:selected");
+		var directId = selectedOption.data('direct-id');
+		var courierId = selectedOption.data('courier-id');
+		$("#uniDirectApply" + id).val(directId);
+		$("#uniCourier" + id).val(courierId);
+	}
+
+
 </script>

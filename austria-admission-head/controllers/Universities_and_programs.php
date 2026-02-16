@@ -90,7 +90,7 @@ if(isset($_POST['updDelUni'])) {
 	else{
 		echo "<div class='alert alert-secondary'><strong>There is an error in the query2!</strong></div>";
 	}
-}
+	}
 
 ?>
 
@@ -117,14 +117,24 @@ if(isset($_POST['subAddProgram'])) {
 		$lastID = mysqli_insert_id($con);
 		$programArray = isset($_POST['clientPreviousDegree']) ? array_values($_POST['clientPreviousDegree']) : [];
 
+		// DEBUG: dump POST for diagnosis (temporary)
+		$__dbg_path = __DIR__ . '/../../tools/debug_posts.json';
+		@mkdir(dirname($__dbg_path), 0777, true);
+		file_put_contents($__dbg_path, json_encode(['ts'=>time(), 'type'=>'updAddProgram', 'post'=>$_POST], JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
+
+		// DEBUG: dump POST for diagnosis (temporary)
+		$__dbg_path = __DIR__ . '/../../tools/debug_posts.json';
+		@mkdir(dirname($__dbg_path), 0777, true);
+		file_put_contents($__dbg_path, json_encode(['ts'=>time(), 'type'=>'subAddProgram', 'post'=>$_POST], JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
+
 		// prepare detail insert once
 		$detailTable = 'austria_add_programs_details' . $_SESSION['dbNo'];
 		$placeholders = implode(',', array_fill(0, 35, '?'));
 		$detailSql = "INSERT INTO `" . $detailTable . "` (aus_add_pro_id, aus_ad_uni_name, aus_ad_degree, aus_ad_program_name, aus_ad_cgpa, aus_ad_instruction, aus_ad_application_fee, aus_ad_tuition_fee, aus_ad_english_pro, aus_ad_ielts_pte, aus_ad_sop_required, aus_ad_sop_note, aus_ad_degree_required, aus_ad_recommendation, aus_ad_normal_cv, aus_ad_europass_cv, aus_ad_gmat_gre_test, aus_ad_entry_test, aus_ad_test_interview, aus_ad_leg_document, aus_ad_previous_relevant, aus_ad_application_process, aus_ad_intake, aus_ad_round, aus_ad_current_round, aus_ad_1st_opening_date, aus_ad_1st_actual_date, aus_ad_2nd_opening_date, aus_ad_2nd_actual_date, aus_ad_next_open_date, aus_ad_degree_acceptable, aus_ad_client_pre_degree, aus_ad_note_head, aus_ad_admission_valid, aus_ad_status, close, status, entry_by) VALUES (" . $placeholders . ")";
 		$detailStmt = mysqli_prepare($con, $detailSql);
 
-		for ($i=0; $i < count($_POST['programName']); $i++) {
-			$programName = $_POST['programName'][$i] ?? '';
+		foreach ($_POST['programName'] as $i => $programName) {
+			$programName = $programName ?? '';
 			$proCGPAPer = $_POST['proCGPAPer'][$i] ?? '';
 			$prolanguageInstruction = $_POST['prolanguageInstruction'][$i] ?? '';
 			$proAppFee = $_POST['proAppFee'][$i] ?? '';
@@ -186,6 +196,7 @@ if(isset($_POST['subAddProgram'])) {
 	}
 	else{
 		echo "<div class='alert alert-secondary'><strong>There is an error in the query2!</strong></div>";
+	}
 }
 
 // Update query 
@@ -229,8 +240,8 @@ if(isset($_POST['updAddProgram'])) {
 		$detailSql = "INSERT INTO `" . $detailTable . "` (aus_add_pro_id, aus_ad_uni_name, aus_ad_degree, aus_ad_program_name, aus_ad_cgpa, aus_ad_instruction, aus_ad_application_fee, aus_ad_tuition_fee, aus_ad_english_pro, aus_ad_ielts_pte, aus_ad_sop_required, aus_ad_sop_note, aus_ad_degree_required, aus_ad_recommendation, aus_ad_normal_cv, aus_ad_europass_cv, aus_ad_gmat_gre_test, aus_ad_entry_test, aus_ad_test_interview, aus_ad_leg_document, aus_ad_previous_relevant, aus_ad_application_process, aus_ad_intake, aus_ad_round, aus_ad_current_round, aus_ad_1st_opening_date, aus_ad_1st_actual_date, aus_ad_2nd_opening_date, aus_ad_2nd_actual_date, aus_ad_next_open_date, aus_ad_degree_acceptable, aus_ad_client_pre_degree, aus_ad_note_head, aus_ad_admission_valid, aus_ad_status, close, status, entry_by) VALUES (" . $placeholders . ")";
 		$detailStmt = mysqli_prepare($con, $detailSql);
 
-		for ($i=0; $i < count($_POST['programName']); $i++) {
-			$programName = $_POST['programName'][$i] ?? '';
+		foreach ($_POST['programName'] as $i => $programName) {
+			$programName = $programName ?? '';
 			$proCGPAPer = $_POST['proCGPAPer'][$i] ?? '';
 			$prolanguageInstruction = $_POST['prolanguageInstruction'][$i] ?? '';
 			$proAppFee = $_POST['proAppFee'][$i] ?? '';
@@ -294,6 +305,7 @@ if(isset($_POST['updAddProgram'])) {
 	}
 	else{
 		echo "<div class='alert alert-secondary'><strong>There is an error in the query2!</strong></div>";
+	}
 }
 
 ?>

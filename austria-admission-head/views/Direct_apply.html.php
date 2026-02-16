@@ -42,6 +42,17 @@ $directUpLink = $row['aus_directup_link'];
 $directUpScreenShot = $row['aus_directup_screenshot'];
 $directStep4 = $row['aus_direct_step4'];
 
+$directclientInformScreenshot = $row['aus_direct_recheck_screenshot'];
+$directclientInformNote = $row['aus_direct_recheck_note'];
+
+$directOkScreenshot = $row['aus_direct_ok_screenshot'];
+$directOkNote = $row['aus_direct_ok_note'];
+
+$directinfoPayFee = $directinfofee = $row['aus_direct_info_fee'];
+$directinfonote = $row['aus_direct_info_note'];
+$directfeepaid = $row['aus_direct_fee_paid'];
+$directpayFeeNote = $directfeenote = $row['aus_direct_fee_note'];
+
 $directStep5 = $row['aus_direct_step5'];
 $directappliedScreenshot = $row['aus_direct_applied_screenshot'];
 $directprogramScreenshot = $row['aus_direct_program_screenshot'];
@@ -50,12 +61,6 @@ $directappliedNote = $row['aus_direct_applied_note'];
 
 $directproofScreenshot = $row['aus_direct_proof_screenshot'];
 $directproofNote = $row['aus_direct_proof_note'];
-
-$directinfofee = $row['aus_direct_info_fee'];
-$directinfonote = $row['aus_direct_info_note'];
-
-$directfeepaid = $row['aus_direct_fee_paid'];
-$directfeenote = $row['aus_direct_fee_note'];
 
 $programNo1Status = $row['aus_direct_program1_status'];
 $programNo1Screenshot = $row['aus_direct_program1_screenshot'];
@@ -87,6 +92,69 @@ $uniAdd = "SELECT aus_uni_apply_link FROM austria_add_universities".$_SESSION['d
 $uniAdd_ex = mysqli_query($con, $uniAdd);
 $rowApply = mysqli_fetch_assoc($uniAdd_ex);
 $uniApplyLink = $rowApply['aus_uni_apply_link'];
+
+// Fetch Changing Status from Checking Table
+$changingStatus = ''; 
+$client_query = "SELECT changing_status FROM austria_clients_programs_checking".$_SESSION['dbNo']." WHERE status='1' AND close='1' AND programs_id='".$programAppliedID."' ORDER BY program_austria_id DESC LIMIT 1 ";
+$client_query_ex = mysqli_query($con, $client_query);
+if ($client_query_ex && mysqli_num_rows($client_query_ex) > 0){
+	$row_c = mysqli_fetch_assoc($client_query_ex);
+	$changingStatus = $row_c['changing_status'];
+}
+
+// Assuming 'aus_direct_ok_screenshot' exists or using a placeholder if needed.
+$directOkScreenshot = isset($row['aus_direct_ok_screenshot']) ? $row['aus_direct_ok_screenshot'] : '';
+$directOkNote = isset($row['aus_direct_ok_note']) ? $row['aus_direct_ok_note'] : '';
+
+// University Specific Labels and Steps
+$step2Label = "Create a one-time account";
+$step2Desc = "Create the account through the link below: (university Direct Apply Portal)";
+$step2Btn = "Create Account Here";
+
+$step3Label = "Save the Updated password";
+$step3Desc = "The student will receive an email from the university. Activate the link in the email, change the password, and save the updated password in the tab.";
+
+$step4Label = "Fill out the Application Form";
+$step4Desc = "Fill out the online form by entering the client's personal details according to their passport and educational documents, and upload the documents to the portal.";
+
+$step6Label = "Submit the admission application";
+$step6Desc = "When the client rechecks and approves the file, submit the application";
+
+$step7Label = "Inform the client that the admission application has been submitted";
+$step7Desc = "Inform the client that the admission application has been submitted, and send the submission screenshot to the client.";
+
+$step8Label = "Waiting for a response";
+
+if ($uniName == 'TU VIENNA (VIENNA UNIVERSITY OF TECHNOLOGY)' || $uniName == '(BOKU) UNIVERSITY OF NATURAL RESOURCES AND LIFE SCIENCES' || $uniName == 'Alpen Adria University Klagenfurt (Courier)') {
+    $step2Label = ($uniName == 'Alpen Adria University Klagenfurt (Courier)') ? "Create a one-time account" : "Download the master's program form";
+    $step2Desc = ($uniName == 'Alpen Adria University Klagenfurt (Courier)') ? "Create the account through the link below:" : "Kindly download the master's program form through the link below:";
+    $step2Btn = ($uniName == 'Alpen Adria University Klagenfurt (Courier)') ? "Create Account Here" : "Download Form";
+    
+    $step3Label = "Fill out the Application Form";
+    $step3Desc = "Fill out the online form. Put the personal details according to passport & education details according to documents.";
+    
+    $step4Label = "Inform the client to recheck the application";
+    $step4Desc = "Please message or call the client, send the application form (PDF) to the client and give instructions for rechecking the admission application.";
+    
+    $step6Label = "Sent the Courier Checklist guidance";
+    $step6Desc = "After confirmation of Rechecking kindly prepare the Application Form, SOP, University Address & Courier Checklist.";
+    
+    $step7Label = "Inform the client regarding courier";
+    $step7Desc = "Inform the client that the courier checklist has been sent, and guide him/her regarding courier.";
+} elseif ($uniName == 'Paris Lodron University of Salzburg') {
+    $step2Label = "Download the master's program form";
+    $step2Desc = "Kindly download the master's program form through link below:";
+    $step2Btn = "Download Form";
+    
+    $step3Label = "Fill out the Application Form";
+    $step3Desc = "Fill out the online form. Put the personal details according to passport & education details according to documents";
+    
+    $step6Label = "Email Application form to department";
+    $step6Desc = "When the client signed the forms and approves the file. Email Application form along with SOP & other documents to the relevant department";
+} elseif ($uniName == 'FH KUFSTEIN TIROL') {
+    $step3Label = "Activated the account through code";
+    $step3Desc = "The student will receive an email from the university with a code. Activate the account by entering the code.";
+}
 ?>
 <div class="card">
 	<div class="card-body">
@@ -210,11 +278,11 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 					<h4>
 						<span id="step1Title" style="<?php if ($directStep1==1){?> color: green; <?php }elseif ($directStep1==2){?>color:red;<?php } ?>"><b>Log in to the client's Gmail account</b></span> &nbsp;&nbsp;&nbsp;&nbsp;
 						<div class="radio radio-success form-check-inline">
-							<input type="radio" id="yesIDStep1" value="1" name="radioStep1" onclick="firstYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep1 == 1) ? 'checked' : '';?> <?php echo ($directStep2==1) ? 'disabled' : '';?> >
+							<input type="radio" id="yesIDStep1" value="1" name="radioStep1" onclick="firstYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep1 == 1) ? 'checked' : '';?> disabled >
 							<label for="yesIDStep1"> Yes </label>
 						</div>
 						<div class="radio radio-danger form-check-inline">
-							<input type="radio" id="noIDStep1" value="2" name="radioStep1" onclick="firstNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep1 == 2) ? 'checked' : '';?> <?php echo ($directStep2==1) ? 'disabled' : '';?> >
+							<input type="radio" id="noIDStep1" value="2" name="radioStep1" onclick="firstNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep1 == 2) ? 'checked' : '';?> disabled >
 							<label for="noIDStep1"> No </label>
 						</div>
 					</h4>
@@ -230,18 +298,18 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 						Step: 02 <span class="text-purple">* (Processing Team Task)</span>
 					</legend>
 					<h4>
-						<span id="step2Title" style="<?php if ($directStep2==1){?> color: green; <?php }elseif ($directStep2==2) { ?> color: red;<?php } ?>"><b> Create a one-time account</b></span> &nbsp;&nbsp;&nbsp;&nbsp;
+						<span id="step2Title" style="<?php if ($directStep2==1){?> color: green; <?php }elseif ($directStep2==2) { ?> color: red;<?php } ?>"><b> <?php echo $step2Label; ?></b></span> &nbsp;&nbsp;&nbsp;&nbsp;
 						<input type="hidden" name="" value="<?php echo $directStep2;?>" id="hiddenStep2">
 						<div class="radio radio-success form-check-inline">
-							<input type="radio" id="yesIDStep2" value="1" name="radioStep2" onclick="secYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep2 == 1) ? 'checked' : '';?> <?php echo ($directStep3==1) ? 'disabled' : '';?> <?php echo ($directStep1==0) ? 'disabled' : '';?>>
+							<input type="radio" id="yesIDStep2" value="1" name="radioStep2" onclick="secYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep2 == 1) ? 'checked' : '';?> disabled>
 							<label for="yesIDStep2"> Yes </label>
 						</div>
 						<div class="radio radio-danger form-check-inline">
-							<input type="radio" id="noIDStep2" value="2" name="radioStep2" onclick="secNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep2 == 2) ? 'checked' : '';?> <?php echo ($directStep3==1) ? 'disabled' : '';?> <?php echo ($directStep1==0) ? 'disabled' : '';?>>
+							<input type="radio" id="noIDStep2" value="2" name="radioStep2" onclick="secNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep2 == 2) ? 'checked' : '';?> disabled>
 							<label for="noIDStep2"> No </label>
 						</div>
 					</h4>
-					<p>Create the account through the link below: (university Direct Apply Portal) <a href="<?php echo $uniApplyLink;?>" class="btn btn-primary" target="_blank"><b>Create Account Here</b></a></p>
+					<p><?php echo $step2Desc; ?> <a href="<?php echo $uniApplyLink;?>" class="btn btn-primary" target="_blank"><b><?php echo $step2Btn; ?></b></a></p>
 					<form id="formDataID1" enctype="multipart/form-data" class="parsley-examples">
 						<input type="hidden" name="updateProgramID" value="<?php echo $programAppliedID;?>">
 						<input type="hidden" name="updateClientID" value="<?php echo $clientID;?>">
@@ -249,24 +317,24 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 						<div class="row">
 							<div class="form-group col-md-3">
 								<label class="form-label">Username / Email <span class="text-danger">*</span></label>
-								<input type="text" name="directUsername" class="form-control" required="required" autocomplete="off" value="<?php echo $directUsername;?>" id="directUsername">
+								<input type="text" name="directUsername" class="form-control" required="required" autocomplete="off" value="<?php echo $directUsername;?>" id="directUsername" disabled>
 							</div>
 							<div class="form-group col-md-3">
 								<label class="form-label">Password <span class="text-danger">*</span></label>
-								<input type="text" name="directPassword" class="form-control" required="required" autocomplete="off" value="<?php echo $directPassword;?>" id="directPassword">
+								<input type="text" name="directPassword" class="form-control" required="required" autocomplete="off" value="<?php echo $directPassword;?>" id="directPassword" disabled>
 							</div>
 							<div class="form-group col-md-3">
 								<label class="form-label">Link <span class="text-danger">*</span></label>
-								<input type="text" name="directLink" class="form-control" required="required" autocomplete="off" value="<?php echo $directLink;?>" id="directLink">
+								<input type="text" name="directLink" class="form-control" required="required" autocomplete="off" value="<?php echo $directLink;?>" id="directLink" disabled>
 							</div>
 							<div class="form-group col-md-3">
 								<div class="agreement-container" data-agreement-id="1">
 									<label class="form-label">ScreenShot <span class="text-danger">(Select multi Files)</span></label>
 									<div class="d-flex justify-content-center">
-										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
-										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off" style="width: 70%;">
+										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here" disabled>
+										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off" style="width: 70%;" disabled>
 									</div>
-									<input type="file" name="directScreenShot[]" id="uploadedFiles1" class="form-control" multiple style="display: none;">
+									<input type="file" name="directScreenShot[]" id="uploadedFiles1" class="form-control" multiple style="display: none;" disabled>
 									<div class="preview"></div>
 								</div>
 								<?php 
@@ -279,7 +347,7 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 							</div>
 							<div class="col-md-12">
 								<div class="float-right">
-									<button class="btn btn-custom" type="button" name="subdirectDetails" <?php echo ($directStep3==1 || $directStep1==0) ? 'disabled' : '';?> onclick="updApplicationForm('formDataID1','subdirectDetails')" id="subdirectDetails"><i class="mdi mdi-upload"></i> Save </button>
+									<button class="btn btn-custom" type="button" name="subdirectDetails" disabled onclick="updApplicationForm('formDataID1','subdirectDetails')" id="subdirectDetails"><i class="mdi mdi-upload"></i> Save </button>
 								</div>
 							</div>
 						</div>
@@ -293,19 +361,19 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 						Step: 03 <span class="text-purple">* (Processing Team Task)</span>
 					</legend>
 					<h4>
-						<span id="step3Title" style="<?php if ($directStep3==1){?> color: green; <?php }elseif ($directStep3==2) { ?> color: red;<?php } ?>"><b>Save the Updated password</b></span> &nbsp;&nbsp;&nbsp;&nbsp;
+						<span id="step3Title" style="<?php if ($directStep3==1){?> color: green; <?php }elseif ($directStep3==2) { ?> color: red;<?php } ?>"><b><?php echo $step3Label; ?></b></span> &nbsp;&nbsp;&nbsp;&nbsp;
 						<input type="hidden" name="" value="<?php echo $directStep3;?>" id="hiddenStep3">
 						<div class="radio radio-success form-check-inline">
-							<input type="radio" id="yesIDStep3" value="1" name="radioStep3" onclick="thirdYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep3 == 1) ? 'checked' : '';?> <?php echo ($directStep4==1) ? 'disabled' : '';?> <?php echo ($directStep2==0) ? 'disabled' : '';?>>
+							<input type="radio" id="yesIDStep3" value="1" name="radioStep3" onclick="thirdYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep3 == 1) ? 'checked' : '';?> disabled>
 
 							<label for="yesIDStep3"> Yes </label>
 						</div>
 						<div class="radio radio-danger form-check-inline">
-							<input type="radio" id="noIDStep3" value="2" name="radioStep3" onclick="thirdNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep3 == 2) ? 'checked' : '';?> <?php echo ($directStep4==1) ? 'disabled' : '';?> <?php echo ($directStep2==0) ? 'disabled' : '';?>>
+							<input type="radio" id="noIDStep3" value="2" name="radioStep3" onclick="thirdNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep3 == 2) ? 'checked' : '';?> disabled>
 							<label for="noIDStep3"> No </label>
 						</div>
 					</h4>
-					<p>The student will receive an email from the university. Activate the link in the email, change the password, and save the updated password in the tab.</p>
+					<p><?php echo $step3Desc; ?></p>
 					<form id="formDataID2" enctype="multipart/form-data" class="parsley-examples">
 						<input type="hidden" name="updateProgramID" value="<?php echo $programAppliedID;?>">
 						<input type="hidden" name="updateClientID" value="<?php echo $clientID;?>">
@@ -313,24 +381,24 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 						<div class="row">
 							<div class="form-group col-md-3">
 								<label class="form-label">Username / Email <span class="text-danger">*</span></label>
-								<input type="text" name="directUpUsername" class="form-control" required="required" autocomplete="off" value="<?php echo $directUpUsername;?>" id="directUpUsername">
+								<input type="text" name="directUpUsername" class="form-control" required="required" autocomplete="off" value="<?php echo $directUpUsername;?>" id="directUpUsername" disabled>
 							</div>
 							<div class="form-group col-md-3">
 								<label class="form-label">Updated Password <span class="text-danger">*</span></label>
-								<input type="text" name="directUpPassword" class="form-control" required="required" autocomplete="off" value="<?php echo $directUpPassword;?>" id="directUpPassword">
+								<input type="text" name="directUpPassword" class="form-control" required="required" autocomplete="off" value="<?php echo $directUpPassword;?>" id="directUpPassword" disabled>
 							</div>
 							<div class="form-group col-md-3">
 								<label class="form-label">Link <span class="text-danger">*</span></label>
-								<input type="text" name="directUpLink" class="form-control" required="required" autocomplete="off" value="<?php echo $directUpLink;?>" id="directUpLink">
+								<input type="text" name="directUpLink" class="form-control" required="required" autocomplete="off" value="<?php echo $directUpLink;?>" id="directUpLink" disabled>
 							</div>
 							<div class="form-group col-md-3">
 								<div class="agreement-container" data-agreement-id="2">
 									<label class="form-label">ScreenShot <span class="text-danger">(Select multi Files)</span></label>
 									<div class="d-flex justify-content-center">
-										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
-										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off" style="width: 70%;">
+										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here" disabled>
+										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off" style="width: 70%;" disabled>
 									</div>
-									<input type="file" name="directUpScreenShot[]" id="uploadedFiles2" class="form-control" multiple style="display: none;">
+									<input type="file" name="directUpScreenShot[]" id="uploadedFiles2" class="form-control" multiple style="display: none;" disabled>
 									<div class="preview"></div>
 								</div>
 								<?php 
@@ -343,7 +411,7 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 							</div>
 							<div class="col-md-12">
 								<div class="float-right">
-									<button class="btn btn-custom" type="button" name="subUpdirectDetails" <?php echo ($directStep4==1 || $directStep2==0) ? 'disabled' : ''; ?> onclick="updApplicationForm('formDataID2','subUpdirectDetails')" id="subUpdirectDetails"><i class="mdi mdi-upload"></i> Save </button>
+									<button class="btn btn-custom" type="button" name="subUpdirectDetails" disabled onclick="updApplicationForm('formDataID2','subUpdirectDetails')" id="subUpdirectDetails"><i class="mdi mdi-upload"></i> Save </button>
 								</div>
 							</div>
 						</div>
@@ -357,18 +425,18 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 						Step: 04 <span class="text-purple">* (Processing Team Task)</span>
 					</legend>
 					<h4>
-						<span id="step4Title" style=" <?php if ($directStep4==1){?> color: green; <?php }elseif ($directStep4==2) { ?> color: red;<?php } ?>"><b> Fill out the Application Form</b></span> &nbsp;&nbsp;&nbsp;&nbsp;
+						<span id="step4Title" style=" <?php if ($directStep4==1){?> color: green; <?php }elseif ($directStep4==2) { ?> color: red;<?php } ?>"><b> <?php echo $step4Label; ?></b></span> &nbsp;&nbsp;&nbsp;&nbsp;
 						<div class="radio radio-success form-check-inline">
-							<input type="radio" id="yesIDStep4" value="1" name="radioStep4" onclick="fourYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep4 == 1) ? 'checked' : '';?> >
+							<input type="radio" id="yesIDStep4" value="1" name="radioStep4" onclick="fourYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep4 == 1) ? 'checked' : '';?> disabled>
 							<label for="yesIDStep4"> Yes </label>
 						</div>
 						<div class="radio radio-danger form-check-inline">
-							<input type="radio" id="noIDStep4" value="2" name="radioStep4" onclick="fourNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep4 == 2) ? 'checked' : '';?> >
+							<input type="radio" id="noIDStep4" value="2" name="radioStep4" onclick="fourNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep4 == 2) ? 'checked' : '';?> disabled>
 							<label for="noIDStep4"> No </label>
 						</div>
 					</h4>
 					
-					<p>Fill out the online form by entering the client's personal details according to their passport and educational documents, and upload the documents to the portal.</p>
+					<p><?php echo $step4Desc; ?></p>
 					<div class="row">
 						<div class="col-md-2"> </div>
 						<div class="col-md-8 alert bg-dark">
@@ -379,22 +447,561 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 			</div>
 			<!-- step no 05 col-md-12 -->
 			<div class="col-md-12">
+					<fieldset class="scheduler-border-head">
+						<legend class="scheduler-border-head">
+							Step: 05 <span class="text-purple">* (Processing Team & Admission Head Task)</span>
+						</legend>
+						
+
+
+						<h4>
+							<span style="<?php echo $directclientInformScreenshot != '' ? 'color: green' : 'color: red'; ?>">
+								<b> Inform the client to recheck the application <?php if($uniName!='University of Vienna' && $uniName!='University of Graz'){ echo "(pay the application fee)"; } ?></b>
+							</span>
+						</h4>
+
+						<h4>Application checking:</h4>
+						<ul>
+							<li>Please send the portal link, username, and password to the client and give instructions for rechecking the admission application.</li>
+						</ul>
+
+						<?php if($uniName!='University of Vienna' && $uniName!='University of Graz'){ ?>
+							<h4>Application Fee Payment:</h4>
+							<ul>
+								<li>
+									After rechecking the admission application.it's time to pay the application fee. Please message or call the client to explain the application fee and the card activation process. When the client pays the application fee to the university, the university automatically updates the payment status. We will take the fee payment receipt from the client and upload it to our portal.
+								</li>
+							</ul>
+						<?php } else { ?>
+							<h4>Application Fee Payment:</h4>
+							<ul>
+								<li>This university <b>does not charge an application fee</b>. Send the portal link, username, and password to the client and give instructions to recheck the admission application. When the client rechecks and approves the file, submit the application.</li>
+							</ul>
+						<?php } ?>
+
+						<ul class="nav nav-tabs nav-justified">
+							<li class="nav-item">
+								<a href="#uploadScreenshot" data-toggle="tab" aria-expanded="true" class="nav-link <?= ($directclientInformScreenshot == '') ? 'active' : 'navSuccess active' ?>">
+									<span class="d-none d-sm-block <?= ($directclientInformScreenshot == '') ? 'text-warning' : 'text-success' ?>">Inform the client to recheck <br> the Application
+									<?php if ($directclientInformScreenshot == '' && $directStep4 == '4') { ?>
+										<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="blink"> Inform To Client </span>
+									<?php } ?>
+									</span>
+								</a>
+							</li>
+
+							<li class="nav-item">
+								<a href="#changesRequired" data-toggle="tab" aria-expanded="false" class="nav-link <?= ($changingStatus == 'head' || $directOkScreenshot != '') ? 'navSuccess' : '' ?>">
+									<span class="d-none d-sm-block <?= ($changingStatus == 'head' || $directOkScreenshot != '') ? 'text-success' : 'text-warning' ?>">Client's Request for Changes in <br> the Application</span>
+								</a>
+							</li>
+
+							<li class="nav-item">
+								<a href="#teamOk" data-toggle="tab" aria-expanded="false" class="nav-link <?= ($directOkScreenshot != '') ? 'navSuccess' : '' ?>">
+									<span class="d-none d-sm-block <?= ($directOkScreenshot != '') ? 'text-success' : 'text-warning' ?>">Application Approved <br> by the Client</span>
+								</a>
+							</li>
+
+							<?php if($uniName!='University of Vienna' && $uniName!='University of Graz'){ ?>
+							<li class="nav-item">
+								<a href="#feeGuides" data-toggle="tab" aria-expanded="false" class="nav-link <?= ($directfeepaid != '') ? 'navSuccess' : '' ?>">
+									<span class="d-none d-sm-block <?= ($directfeepaid != '') ? 'text-success' : 'text-warning' ?>">The client has paid the <br>application fee.</span>
+								</a>
+							</li>
+							<?php } ?>
+
+							<li class="nav-item">
+								<a href="#additionalTask" data-toggle="tab" aria-expanded="false" class="nav-link <?= ($directStep5 == '1') ? 'navSuccess' : '' ?>">
+									<span class="d-none d-sm-block <?= ($directStep5 == '1') ? 'text-success' : 'text-warning' ?>">Final Step</span>
+								</a>
+							</li>
+						</ul>
+
+						<div class="tab-content">
+							<div class="tab-pane show active" id="uploadScreenshot">
+								<div class="row mt-3">
+									<div class="col-md-12">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="alert bg-dark text-warning">
+													<p>Name: <strong><?php echo ucwords($clientName);?></strong> <span class="float-right">ID-<strong><?php echo $clientID;?></strong></span></p>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="alert bg-dark text-warning">
+													<p>Whatapp No: <strong><a class="text-warning" href="https://web.whatsapp.com/send?phone=+<?php echo $clientWhatapp;?>" target="_blank"><?php echo $clientWhatapp; ?></a></strong></p>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="alert bg-dark text-warning">
+													<p>Degree: <strong><?php foreach ($appliedChanging as $appRow){echo ucwords($appRow);};?></strong></p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<h4>Processing Team</h4>
+									</div>
+									<div class="col-md-12">
+										<table class="table table-bordered table-striped text-center">
+											<thead>
+												<tr>
+													<th>Username / Email</th>
+													<th>Updated Password</th>
+													<th>Link</th>
+													<th>Inform ScreenShot</th>
+													<th>Note</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td class="breakTD"><?php echo $directUsername;?></td>
+													<td class="breakTD"><?php echo $directPassword;?></td>
+													<td class="breakTD"><?php echo $directLink;?></td>
+													<td class="breakTD">
+														<?php 
+														if ($directclientInformScreenshot != '') {
+															$fileMulti = explode(',', $directclientInformScreenshot);
+															foreach ($fileMulti as $fileName) {
+															?>
+															<a href="../payagreements/<?php echo $fileName;?>" target="_blank"><?php echo $fileName;?></a><br>
+															<?php } 
+														} ?>
+													</td>
+													<td class="breakTD"><?php echo $directclientInformNote;?></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									
+									<div class="col-md-12">
+										<!-- Guideline Link Section if needed -->
+										<?php 
+										// Placeholder for guidelines similar to Italy
+										?>
+									</div>
+								</div>
+
+								<form id="formDirectInfo" enctype="multipart/form-data" class="parsley-examples">
+									<input type="hidden" name="updateProgramID" value="<?php echo $programAppliedID;?>">
+									<div class="row">
+										<div class="form-group col-md-4">
+											<div class="agreement-container" data-agreement-id="1">
+												<label class="form-label">Inform to Client WhatApp ScreenShot <span class="text-danger">* (Select Multi Files)</span></label>
+												<div class="d-flex justify-content-center">
+													<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
+													<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off">
+												</div>
+												<input type="file" name="directclientInformScreenshot[]" required="required" id="uploadedFiles1" class="form-control" multiple style="display: none;">
+												<div class="preview"></div>
+											</div>
+											<?php
+											if($directclientInformScreenshot!=''){ 
+											$fileMulti = explode(',', $directclientInformScreenshot);
+											foreach ($fileMulti as $fileName) {
+											?>
+											<a href="../payagreements/<?php echo $fileName;?>" target="blank"><?php echo $fileName;?></a><br>
+											<?php } } ?>
+										</div>
+										<div class="form-group col-md-8">
+											<label class="form-label">Note</label>
+											<textarea name="directclientInformNote" class="form-control"><?php echo $directclientInformNote;?></textarea>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="float-right ml-2">
+											<button class="btn btn-danger btn-sm" type="button" <?php echo $directclientInformScreenshot=='' ? 'disabled' : '';?> onclick="del(delInformToClient,<?php echo $programAppliedID;?>);"><i class="mdi mdi-trash-can"></i> </button>
+										</div>
+										<div class="float-right">
+											<button class="btn btn-custom" type="button" name="subdirectinfoClient" onclick="saveDataForm('formDirectInfo', 'subdirectinfoClient')" id="subdirectinfoClient" <?php echo ($directclientInformScreenshot != '') ? 'disabled' : ''; ?>><i class="mdi mdi-upload"></i> Inform to Client </button>
+										</div>
+									</div>
+								</form>
+							</div>
+
+							<div class="tab-pane" id="changesRequired">
+								<div class="row mt-3">
+									<div class="col-md-12">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="alert bg-dark text-warning">
+													<p>Name: <strong><?php echo ucwords($clientName);?></strong> <span class="float-right">ID-<strong><?php echo $clientID;?></strong></span></p>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="alert bg-dark text-warning">
+													<p>Whatapp No: <strong><a class="text-warning" href="https://web.whatsapp.com/send?phone=+<?php echo $clientWhatapp;?>" target="_blank"><?php echo $clientWhatapp; ?></a></strong></p>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="alert bg-dark text-warning">
+													<p>Degree: <strong><?php foreach ($appliedChanging as $appRow){echo ucwords($appRow);};?></strong></p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<h4 class="text-pink">Changing Proceeded By Processing Team</h4>
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th width="30%">Changing ScreenShot</th>
+													<th width="60%">Changing Note</th>
+													<th width="10%">Create Date</th>
+												</tr>
+											</thead>
+											<tbody>
+												<?php
+												$client_query = "SELECT * from austria_clients_programs_checking".$_SESSION['dbNo']." WHERE status='1' AND close='1' AND changing_status='team' AND programs_id='".$programAppliedID."' ";
+												$client_query_ex = mysqli_query($con,$client_query);
+												while ($rowCl = mysqli_fetch_assoc($client_query_ex)) {
+												?>
+												<tr>
+													<td class="breakTD">
+														<?php 
+														if ($rowCl['changing_screenshot'] != '') {
+															$fileMulti = explode(',', $rowCl['changing_screenshot']);
+															foreach ($fileMulti as $fileName) {
+															?>
+															<a href="../payagreements/<?php echo $fileName;?>" target="_blank"><?php echo $fileName;?></a><br>
+															<?php } 
+														} ?>
+													</td>
+													<td class="breakTD"><?php echo $rowCl['changing_note'];?></td>
+													<td class="breakTD"><?php echo $rowCl['create_date'];?></td>
+												</tr>
+												<?php } ?>
+											</tbody>
+										</table>
+									</div>
+									<div class="col-md-12">
+										<h4 class="text-primary">Changing Required By Admission Head</h4>
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th width="20%">Changing ScreenShot</th>
+													<th width="30%">Changing Audio</th>
+													<th width="35%">Changing Note</th>
+													<th width="15%">Create Date</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<?php 
+												$client_query = "SELECT * from austria_clients_programs_checking".$_SESSION['dbNo']." WHERE status='1' AND close='1' AND changing_status='head' AND programs_id='".$programAppliedID."' ";
+												$client_query_ex = mysqli_query($con,$client_query);
+												while ($rowCl = mysqli_fetch_assoc($client_query_ex)) {
+													$changingAudio = $rowCl['changing_audio'];
+												?>
+												<tr>
+													<td class="breakTD">
+														<?php 
+														if ($rowCl['changing_screenshot'] != '') {
+															$fileMulti = explode(',', $rowCl['changing_screenshot']);
+															foreach ($fileMulti as $fileName) {
+															?>
+															<a href="../payagreements/<?php echo $fileName;?>" target="_blank"><?php echo $fileName;?></a><br>
+															<?php } 
+														} ?>
+													</td>
+													<td class="breakTD">
+														<?php 
+														if ($changingAudio != '') {
+															$fileMultiA = explode(',', $changingAudio);
+															foreach ($fileMultiA as $fileName) {
+															?>
+															<audio controls>
+																<source src="../payagreements/<?php echo $fileName; ?>" type="audio/mpeg">
+																Your browser does not support the audio element.
+															</audio><br>
+															<?php }
+														} ?>
+													</td>
+													<td class="breakTD"><?php echo $rowCl['changing_note'];?></td>
+													<td class="breakTD"><?php echo $rowCl['create_date'];?></td>
+													<td class="breakTD"><button class="btn btn-danger btn-sm" type="button" onclick="del(delInformHead,<?php echo $rowCl['aus_client_pro_check_id'];?>);"><i class="mdi mdi-trash-can"></i> </button></td>
+												</tr>
+												<?php } ?>
+											</tbody>
+										</table>
+									</div>
+									<div class="col-md-12">
+										<form id="formDirectChanges" enctype="multipart/form-data" class="parsley-examples">
+											<input type="hidden" name="updateProgramID" value="<?php echo $programAppliedID;?>">
+											<div class="row">
+												<div class="form-group col-md-12">
+													<label class="form-label">Change Note</label>
+													<textarea class="form-control" name="changingNote"></textarea>
+												</div>
+												<div class="form-group col-md-6">
+													<div class="agreement-container" data-agreement-id="2">
+														<label class="form-label">Change WhatsApp ScreenShot <span class="text-danger">* (Select Multi Files)</span></label>
+														<div class="d-flex justify-content-center">
+															<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
+															<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off">
+														</div>
+														<input type="file" name="changingScreenshot[]" required="required" id="uploadedFiles2" class="form-control" multiple style="display: none;">
+														<div class="preview"></div>
+													</div>
+												</div>
+												<div class="form-group col-md-6">
+													<div class="agreement-container" data-agreement-id="3">
+														<label class="form-label">Any Audio Message <span class="text-danger">* (Select Multi Files)</span></label>
+														<div class="d-flex justify-content-center">
+															<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
+															<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off">
+														</div>
+														<input type="file" name="changingAudio[]" id="uploadedFiles3" class="form-control" multiple style="display: none;">
+														<div class="preview"></div>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<div class="float-right">
+														<button class="btn btn-custom" type="button" name="subdirectChangeDetails" onclick="saveDataForm('formDirectChanges', 'subdirectChangeDetails')" id="subdirectChangeDetails"><i class="mdi mdi-upload"></i> Send request for changes </button>
+													</div>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+
+							<div class="tab-pane " id="teamOk">
+								<form id="formDirectOk" enctype="multipart/form-data" class="parsley-examples">
+									<input type="hidden" name="updateProgramID" value="<?php echo $programAppliedID;?>">
+									<div class="row mt-3">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="alert bg-dark text-warning">
+														<p>Name: <strong><?php echo ucwords($clientName);?></strong> <span class="float-right">ID-<strong><?php echo $clientID;?></strong></span></p>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="alert bg-dark text-warning">
+														<p>Whatapp No: <strong><a class="text-warning" href="https://web.whatsapp.com/send?phone=+<?php echo $clientWhatapp;?>" target="_blank"><?php echo $clientWhatapp; ?></a></strong></p>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="alert bg-dark text-warning">
+														<p>Degree: <strong><?php foreach ($appliedChanging as $appRow){echo ucwords($appRow);};?></strong></p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<h4>Admission Head</h4>
+										</div>
+										<div class="col-md-12">
+											<table class="table table-bordered table-striped text-center">
+												<thead>
+													<tr>
+														<th>Approved Screenshot</th>
+														<th>Approved Note</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td class="breakTD">
+															<?php 
+															if ($directOkScreenshot != '') {
+																$fileMulti = explode(',', $directOkScreenshot);
+																foreach ($fileMulti as $fileName) {
+																?>
+																<a href="../payagreements/<?php echo $fileName;?>" target="_blank"><?php echo $fileName;?></a><br>
+																<?php } 
+															} ?>
+														</td>
+														<td class="breakTD"><?php echo $directOkNote;?></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="form-group col-md-12">
+											<label class="form-label">Approved Note</label>
+											<textarea class="form-control" name="directOkNote"><?php echo $directOkNote;?></textarea>
+										</div>
+										<div class="form-group col-md-4">
+											<div class="agreement-container" data-agreement-id="4">
+												<label class="form-label">Approved WhatsApp ScreenShot <span class="text-danger">* (Select Multi Files)</span></label>
+												<div class="d-flex justify-content-center">
+													<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
+													<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off">
+												</div>
+												<input type="file" name="directOkScreenshot[]" required="required" id="uploadedFiles4" class="form-control" multiple style="display: none;">
+												<div class="preview"></div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="float-right ml-2">
+												<button class="btn btn-danger btn-sm" type="button" <?php echo $directOkScreenshot=='' ? 'disabled' : '';?> onclick="del(delApproved,<?php echo $programAppliedID;?>);"><i class="mdi mdi-trash-can"></i> </button>
+											</div>
+											<div class="float-right">
+												<button class="btn btn-custom" type="button" name="subdirectOk" onclick="saveDataForm('formDirectOk', 'subdirectOk')" id="subdirectOk" <?php echo ($directOkScreenshot != '') ? 'disabled' : ''; ?>><i class="mdi mdi-upload"></i> Application Approved </button>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+
+							<div class="tab-pane " id="feeGuides">
+								<form id="formDirectFee" enctype="multipart/form-data" class="parsley-examples">
+									<input type="hidden" name="updateProgramID" value="<?php echo $programAppliedID;?>">
+									<div class="row mt-3">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="alert bg-dark text-warning">
+														<p>Name: <strong><?php echo ucwords($clientName);?></strong> <span class="float-right">ID-<strong><?php echo $clientID;?></strong></span></p>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="alert bg-dark text-warning">
+														<p>Whatapp No: <strong><a class="text-warning" href="https://web.whatsapp.com/send?phone=+<?php echo $clientWhatapp;?>" target="_blank"><?php echo $clientWhatapp; ?></a></strong></p>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="alert bg-dark text-warning">
+														<p>Degree: <strong><?php foreach ($appliedChanging as $appRow){echo ucwords($appRow);};?></strong></p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<h4>Admission Head</h4>
+										</div>
+										<div class="col-md-12">
+											<table class="table table-bordered table-striped text-center">
+												<thead>
+													<tr>
+														<th>Inform to Pay Fee Whatapp ScreenShot</th>
+														<th>Fee Paid By Client ScreenShot</th>
+														<th>Fee Note</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td class="breakTD"><?php 
+															if ($directinfoPayFee != '') {
+																$fileMulti = explode(',', $directinfoPayFee);
+																foreach ($fileMulti as $fileName) {
+																?>
+																<a href="../payagreements/<?php echo $fileName;?>" target="_blank"><?php echo $fileName;?></a><br>
+																<?php } 
+															} ?></td>
+														<td class="breakTD"><?php 
+															if ($directfeepaid != '') {
+																$fileMulti = explode(',', $directfeepaid);
+																foreach ($fileMulti as $fileName) {
+																?>
+																<a href="../payagreements/<?php echo $fileName;?>" target="_blank"><?php echo $fileName;?></a><br>
+																<?php } 
+															} ?></td>
+														<td class="breakTD"><?php echo $directpayFeeNote;?></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="form-group col-md-12">
+											<label class="form-label">Note</label>
+											<textarea name="directpayFeeNote" class="form-control"><?php echo $directpayFeeNote;?></textarea>
+										</div>
+									</div>
+								</form>
+							</div>
+
+							<div class="tab-pane " id="additionalTask">
+								<form id="formDirectFinal" enctype="multipart/form-data" class="parsley-examples">
+									<input type="hidden" name="updateProgramID" value="<?php echo $programAppliedID;?>">
+									<div class="row mt-3">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="alert bg-dark text-warning">
+														<p>Name: <strong><?php echo ucwords($clientName);?></strong> <span class="float-right">ID-<strong><?php echo $clientID;?></strong></span></p>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="alert bg-dark text-warning">
+														<p>Whatapp No: <strong><a class="text-warning" href="https://web.whatsapp.com/send?phone=+<?php echo $clientWhatapp;?>" target="_blank"><?php echo $clientWhatapp; ?></a></strong></p>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="alert bg-dark text-warning">
+														<p>Degree: <strong><?php foreach ($appliedChanging as $appRow){echo ucwords($appRow);};?></strong></p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<h4>Admission Head</h4>
+										</div>
+										<div class="col-md-6">
+											<label>Inform the client to recheck the Application</label> <br>
+											<div class="checkbox checkbox-success form-check-inline">
+												<input type="checkbox" id="addFinalStep1" value="1" <?= ($directclientInformScreenshot != '') ? 'checked' : '' ?> disabled>
+												<label for="addFinalStep1"> Yes </label>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<label>Application Changes By Client</label> <br>
+											<div class="checkbox checkbox-success form-check-inline">
+												<input type="checkbox" id="addFinalStep2" value="1" <?= ($changingStatus != '') ? 'checked' : '' ?> disabled>
+												<label for="addFinalStep2"> Yes </label>
+											</div>
+										</div>
+										<div class="col-md-6 mt-2">
+											<label>Application Approved By Client</label> <br>
+											<div class="checkbox checkbox-success form-check-inline">
+												<input type="checkbox" id="addFinalStep3" value="1" <?= ($directOkScreenshot != '') ? 'checked' : '' ?> disabled>
+												<label for="addFinalStep3"> Yes </label>
+											</div>
+										</div>
+										<?php if($uniName!='University of Vienna' && $uniName!='University of Graz'){ ?>
+										<div class="col-md-6 mt-2">
+											<label>Client has paid the application Fee</label> <br>
+											<div class="checkbox checkbox-success form-check-inline">
+												<input type="checkbox" id="addFinalStep4" value="1" <?= ($directfeepaid != '') ? 'checked' : '' ?> disabled>
+												<label for="addFinalStep4"> Yes </label>
+											</div>
+										</div>
+										<?php } ?>
+									</div>
+									<div class="row mt-2">
+										<div class="col-md-12">
+											<div class="float-right">
+												<button class="btn btn-custom" type="button" name="subdirectFinalStep" onclick="saveDataForm('formDirectFinal', 'subdirectFinalStep')" id="subdirectFinalStep" <?= ($directStep5 == '1') ? 'disabled' : '' ?>><i class="mdi mdi-upload"></i> Finalize Step 5 </button>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+				</fieldset>
+			</div>
+			<!-- step no 06 col-md-12 -->
+			<div class="col-md-12">
 				<fieldset class="scheduler-border-team">
 					<legend class="scheduler-border-team">
-						Step: 05 <span class="text-purple">* (Processing Team Task)</span>
+						Step: 06 <span class="text-purple">* (Processing Team Task)</span>
 					</legend>
 					<h4>
-						<span id="step6Title" style=" <?php echo ($directStep5==1) ? 'color: green' : 'color: red'; ?>"><b> Submit the admission application</b></span> &nbsp;&nbsp;&nbsp;&nbsp;
+						<span id="step6Title" style=" <?php echo ($directStep5==1) ? 'color: green' : 'color: red'; ?>"><b> <?php echo $step6Label; ?></b></span> &nbsp;&nbsp;&nbsp;&nbsp;
 						<div class="radio radio-success form-check-inline">
-							<input type="radio" id="yesIDStep6" value="1" name="radioStep6" onclick="sixYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep5==1) ? 'checked' : '';?> <?php echo ($directappliedScreenshot=='') ? '' : 'disabled';?> > 
+							<input type="radio" id="yesIDStep6" value="1" name="radioStep6" onclick="sixYesStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep5==1) ? 'checked' : '';?> disabled > 
 							<label for="yesIDStep6"> Yes </label>
 						</div>
 						<div class="radio radio-danger form-check-inline">
-							<input type="radio" id="noIDStep6" value="2" name="radioStep6" onclick="sixNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep5 == 2) ? 'checked' : '';?> <?php echo ($directappliedScreenshot=='') ? '' : 'disabled';?>>
+							<input type="radio" id="noIDStep6" value="2" name="radioStep6" onclick="sixNoStep(<?php echo $programAppliedID;?>);" <?php echo ($directStep5 == 2) ? 'checked' : '';?> disabled>
 							<label for="noIDStep6"> No </label>
 						</div>
 					</h4>
-					<p>When the client rechecks and approves the file, submit the application</p>
+					<p><?php echo $step6Desc; ?></p>
 					<h4 class="text-danger">Note:</h4>
 					<ul>
 						<li>Use the PDF that was sent to the client</li>
@@ -446,14 +1053,14 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 					<form id="formDataID3" enctype="multipart/form-data" class="parsley-examples">
 						<input type="hidden" name="updateProgramID" value="<?php echo $programAppliedID;?>">
 						<div class="row">
-							<div class="col-md-4 form-group">
+									<div class="col-md-4 form-group">
 								<div class="agreement-container" data-agreement-id="3">
 									<label class="form-label">Applied ScreenShot <span class="text-danger">(Select multi Files)</span></label>
 									<div class="d-flex justify-content-center">
-										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
-										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off">
+										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here" disabled>
+										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off" disabled>
 									</div>
-									<input type="file" name="directappliedScreenshot[]" id="uploadedFiles3" required="required" class="form-control" multiple style="display: none;">
+									<input type="file" name="directappliedScreenshot[]" id="uploadedFiles3" required="required" class="form-control" multiple style="display: none;" disabled>
 									<div class="preview"></div>
 								</div>
 							</div>
@@ -461,10 +1068,10 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 								<div class="agreement-container" data-agreement-id="4">
 									<label class="form-label">Program ScreenShot <span class="text-danger">(Select multi Files)</span></label>
 									<div class="d-flex justify-content-center">
-										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
-										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off">
+										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here" disabled>
+										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off" disabled>
 									</div>
-									<input type="file" name="directprogramScreenshot[]" id="uploadedFiles4" required="required" class="form-control" multiple style="display: none;">
+									<input type="file" name="directprogramScreenshot[]" id="uploadedFiles4" required="required" class="form-control" multiple style="display: none;" disabled>
 									<div class="preview"></div>
 								</div>
 							</div>
@@ -472,22 +1079,22 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 								<div class="agreement-container" data-agreement-id="5">
 									<label class="form-label">Detail's ScreenShot <span class="text-danger">(Select multi Files)</span></label>
 									<div class="d-flex justify-content-center">
-										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here">
-										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off">
+										<input type="file" class="fileInput cust-file-input text-white" name="" multiple data-toggle="tooltip" data-placement="top" title="Select or Drag Files Here" disabled>
+										<input type="text" class="form-control pasteInput" placeholder="Paste Image..."  autocomplete="off" disabled>
 									</div>
-									<input type="file" name="directdetailsScreenshot[]" id="uploadedFiles5" class="form-control" multiple style="display: none;">
+									<input type="file" name="directdetailsScreenshot[]" id="uploadedFiles5" class="form-control" multiple style="display: none;" disabled>
 									<div class="preview"></div>
 								</div>
 							</div>
 							<div class="form-group col-md-12">
 								<label class="form-label">Note <span class="text-danger">*</span></label>
-								<textarea name="directappliedNote" class="form-control" required="required"></textarea>
+								<textarea name="directappliedNote" class="form-control" required="required" disabled></textarea>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-12">
 								<div class="float-right">
-									<button class="btn btn-custom" <?php echo ($directappliedScreenshot=='') ? '' : 'disabled';?> type="button" name="subdirectApplied" onclick="updApplicationForm('formDataID3','subdirectApplied')" id="subdirectApplied"><i class="mdi mdi-upload"></i> Applied </button>
+									<button class="btn btn-custom" disabled type="button" name="subdirectApplied" onclick="updApplicationForm('formDataID3','subdirectApplied')" id="subdirectApplied"><i class="mdi mdi-upload"></i> Applied </button>
 								</div>
 							</div>
 						</div>
@@ -498,17 +1105,17 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 			<div class="col-md-12">
 				<fieldset class="scheduler-border-team">
 					<legend class="scheduler-border-team">
-						<span>Step: 06 </span>
+						<span>Step: 07 </span>
 						<span class="text-purple">* (Admission Head Task)</span>
 					</legend>
 					<h4>
-						<span style="<?php echo $directproofScreenshot != '' ? 'color: green' : 'color: red'; ?>"><b> Inform the client about the submission application</b>
+						<span style="<?php echo $directproofScreenshot != '' ? 'color: green' : 'color: red'; ?>"><b> <?php echo $step7Label; ?></b>
 						<?php if ($directappliedStatus=='5') {?>
 						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="blink"> Informed about submission Application </span>
 						<?php }?>
 						</span>
 					</h4>
-					<p>Inform the client about the submission application with screenshot proof </p>
+					<p><?php echo $step7Desc; ?></p>
 					<table class="table table-bordered">
 						<thead>
 							<tr>
@@ -558,14 +1165,14 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 					</form>
 				</fieldset>
 			</div>
-			<?php if($uniName!='Czech University of Life Sciences Prague (LSP)' && $uniName!='Mendel University in Brno (MD)'){ ?>
+			<?php if($uniName!='Czech University of Life Sciences Prague (LSP)' && $uniName!='Mendel University in Brno (MD)' && $uniName!='University of Vienna' && $uniName!='University of Graz' && $uniName!='TU VIENNA (VIENNA UNIVERSITY OF TECHNOLOGY)' && $uniName!='Paris Lodron University of Salzburg' && $uniName!='(BOKU) UNIVERSITY OF NATURAL RESOURCES AND LIFE SCIENCES' && $uniName!='Alpen Adria University Klagenfurt (Courier)' && $uniName!='TU GRAZ'){ ?>
 			<!-- step no 07 col-md-12 -->
 			<div class="col-md-12">
 				<fieldset class="scheduler-border-team">
 					<legend class="scheduler-border-team">
-						Step: 07 <span class="text-purple"> * (Admission Head Task)</span>
+						Step: 08 <span class="text-purple"> * (Admission Head Task)</span>
 					</legend>
-					<h4 class="<?php echo (!empty($directafterapplyfeepaid) && !empty($directafterapplyinfofee)) ? 'text-success' : 'text-danger'; ?>">After Applying, the client will receive an email regarding the applucation fee.</h4>
+					<h4 class="<?php echo (!empty($directfeepaid) && !empty($directinfofee)) ? 'text-success' : 'text-danger'; ?>">After Applying, the client will receive an email regarding the applucation fee.</h4>
 					<ul>
 						<li><p>Msg / Call to client and guide about the application fee & card activation mehtod.</p></li>
 						<li><p>When the client pay the <strong>university applicationn fee</strong>, the university automatically updates the payment status.</p></li>
@@ -697,9 +1304,9 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 			<div class="col-md-12">
 				<fieldset class="scheduler-border-team">
 					<legend class="scheduler-border-team">
-						Step: 08 <span class="text-purple">* (Processing Team Task)</span>
+						Step: 09 <span class="text-purple">* (Processing Team Task)</span>
 					</legend>
-					<h4><span style="<?php echo $directappliedStatus=='9' ? 'color: green' : 'color: red'; ?>"><b>Waiting for a response</b></span></h4>
+					<h4><span style="<?php echo $directappliedStatus=='9' ? 'color: green' : 'color: red'; ?>"><b><?php echo $step8Label; ?></b></span></h4>
 					<p>Waiting for a response if the application is accepted, go for the RP Process.</p>
 					<ul class="nav nav-tabs">
 						<li class="nav-item">
@@ -832,7 +1439,7 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 											</div>
 											<div class="col-md-12">
 												<div class="float-right">
-													<button <?php echo $programNo1Screenshot == '' ? '' : 'disabled'; ?> class="btn btn-custom" type="button" name="submitProgram1" onclick="updApplicationForm('formDataID8','submitProgram1')" id="submitProgram1"><i class="mdi mdi-upload"></i> Update </button>
+													<button disabled class="btn btn-custom" type="button" name="submitProgram1" onclick="updApplicationForm('formDataID8','submitProgram1')" id="submitProgram1"><i class="mdi mdi-upload"></i> Update </button>
 												</div>
 											</div>
 										</div>
@@ -876,7 +1483,7 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 											</div>
 											<div class="col-md-12">
 												<div class="float-right">
-													<button <?php echo $programNo2Screenshot == '' ? '' : 'disabled'; ?> class="btn btn-custom" type="button" name="submitProgram2" onclick="updApplicationForm('formDataID9','submitProgram2')" id="submitProgram2"><i class="mdi mdi-upload"></i> Update </button>
+													<button disabled class="btn btn-custom" type="button" name="submitProgram2" onclick="updApplicationForm('formDataID9','submitProgram2')" id="submitProgram2"><i class="mdi mdi-upload"></i> Update </button>
 												</div>
 											</div>
 										</div>
@@ -1380,4 +1987,196 @@ $uniApplyLink = $rowApply['aus_uni_apply_link'];
 			}
 		});
 	}
+
+	function saveDataForm(formDataID, subButton) {
+		let $form = $("#" + formDataID);
+		let $btn = $("#" + subButton);
+		if ($form.parsley().validate()) {
+			$btn.prop("disabled", true).text("Submitting...");
+			let formData = new FormData($form[0]);
+			formData.append(subButton, 1);
+
+			$.ajax({
+				url: "models/_directApplyControllersState.php",
+				type: "POST",
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function (response) {
+					try {
+						let res = typeof response === "string" ? JSON.parse(response) : response;
+						if (res.status === "success") {
+							Swal.fire({
+								title: res.title,
+								text: res.text,
+								icon: "success"
+							}).then(() => {
+								location.reload();
+							});
+						} else {
+							Swal.fire({
+								title: res.title,
+								text: res.text,
+								icon: "error"
+							});
+							$btn.prop("disabled", false).text("Submit");
+						}
+					} catch (e) {
+						console.error("JSON parse error:", response);
+						Swal.fire({
+							title: "Error!",
+							text: "Server returned an unexpected response.",
+							icon: "error"
+						});
+						$btn.prop("disabled", false).text("Submit");
+					}
+				},
+				error: function (xhr, status, error) {
+					Swal.fire({
+						title: "Error!",
+						text: "Something went wrong: " + error,
+						icon: "error"
+					});
+					$btn.prop("disabled", false).text("Submit");
+				}
+			});
+		} else {
+			Swal.fire({
+				title: "Validation Error",
+				text: "Please fill all required fields before submitting.",
+				icon: "warning"
+			});
+		}
+	}
+
+	function copyLink(linkCopy) {
+		var message = "";
+		if (linkCopy == 'Vienna') {
+			message = "https://info.wslcms.com/application-guideline?neHinA0vER06=Vienna&guiDRafiA05S=Vienna";
+		} else if (linkCopy == 'Graz') {
+			message = "https://info.wslcms.com/application-guideline?neHinA0vER06=Graz&guiDRafiA05S=Graz";
+		}
+
+		navigator.clipboard.writeText(message).then(function () {
+			var linktoast = document.getElementById("showToastLink");
+			if(linktoast) {
+				linktoast.classList.add("show");
+				setTimeout(function () {
+					linktoast.classList.remove("show");
+				}, 3000);
+			}
+		}).catch(function (err) {
+			console.error("Failed to copy text: ", err);
+		});
+	};
+
+	function viewGuides() {
+		var guideUni = $("#guideUni").val();
+		$.ajax({
+			type: "POST",
+			url: "models/applicationGuideline.php",
+			data: 'guideUniName=' + guideUni,
+			success: function (data) {
+				$(".showModalTitle").html('Application Guidelines');
+				$(".showModalClient").html(data);
+				$("#showModalClient").modal('show');
+			}
+		});
+	}
+
+	function delInformToClient(id) {
+		$.ajax({
+			type: "POST",
+			url: "models/deleteStepState.php",
+			data: 'informToClientDel=' + id,
+			success: function (data) {
+				Swal.fire('Deleted!', 'Record has been deleted.', 'success').then(() => { window.location.reload(); });
+			}
+		});
+	};
+	function del(func, id) {
+		Swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, delete it!'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				func(id);
+			}
+		})
+	}
+	function delInformToClient(id) {
+		$.ajax({
+			type: "POST",
+			url: "models/deleteStepState.php",
+			data: { informToClientDel: id },
+			success: function (data) {
+				Swal.fire('Deleted!', 'Record has been deleted.', 'success').then(() => { window.location.reload(); });
+			}
+		});
+	};
+	function delInformHead(id) {
+		$.ajax({
+			type: "POST",
+			url: "models/deleteStepState.php",
+			data: { delInformHead: id },
+			success: function (data) {
+				Swal.fire('Deleted!', 'Record has been deleted.', 'success').then(() => { window.location.reload(); });
+			}
+		});
+	};
+	function delInformTeam(id) {
+		$.ajax({
+			type: "POST",
+			url: "models/deleteStepState.php",
+			data: { delInformTeam: id },
+			success: function (data) {
+				Swal.fire('Deleted!', 'Record has been deleted.', 'success').then(() => { window.location.reload(); });
+			}
+		});
+	};
+	function delChangesHead(id, programAppliedID) {
+		$.ajax({
+			type: "POST",
+			url: "models/deleteStepState.php",
+			data: { changesHeadDel: id, programAppliedID: programAppliedID },
+			success: function (data) {
+				Swal.fire('Deleted!', 'Record has been deleted.', 'success').then(() => { window.location.reload(); });
+			}
+		});
+	};
+	function delApproved(id) {
+		$.ajax({
+			type: "POST",
+			url: "models/deleteStepState.php",
+			data: { approvedHeadDel: id },
+			success: function (data) {
+				Swal.fire('Deleted!', 'Record has been deleted.', 'success').then(() => { window.location.reload(); });
+			}
+		});
+	};
+	function delFeePaid(id) {
+		$.ajax({
+			type: "POST",
+			url: "models/deleteStepState.php",
+			data: { feePaidHeadDel: id },
+			success: function (data) {
+				Swal.fire('Deleted!', 'Record has been deleted.', 'success').then(() => { window.location.reload(); });
+			}
+		});
+	};
+	function delProof(id) {
+		$.ajax({
+			type: "POST",
+			url: "models/deleteStepState.php",
+			data: { proofHeadDel: id },
+			success: function (data) {
+				Swal.fire('Deleted!', 'Record has been deleted.', 'success').then(() => { window.location.reload(); });
+			}
+		});
+	};
 </script>

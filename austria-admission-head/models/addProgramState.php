@@ -191,8 +191,8 @@ if (isset($_POST['clientID'])) {
 											<?php } ?>
 										</select>
 									</div>
-									<input type="" name="uniDirectApply[]" id="uniDirectApply0">
-	                                <input type="" name="uniCourier[]" id="uniCourier0">
+									<input type="hidden" name="uniDirectApply[]" id="uniDirectApply0">
+	                                <input type="hidden" name="uniCourier[]" id="uniCourier0">
 								</td>
 								<td>
 									<div id="applyshowuniReltProg0"></div>

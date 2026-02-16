@@ -1,0 +1,80 @@
+# Created By: Muhammad Safdar
+# Dated: Jan 01, 2024
+# Purpose: HTACCESS
+# Project: WSL Consultants CMS
+# Denying Directory Access
+
+RewriteEngine on
+# Basic links --------------------------------------------------------
+RewriteRule ^dashboard$ index.php?page=Dashboard&page=Dashboard [QSA,NC,L]
+RewriteRule ^change-password$ index.php?page=Change_password&page=Change_password [QSA,NC,L]
+RewriteRule ^profile-setting$ index.php?page=Profile_setting&page=Profile_setting [QSA,NC,L]
+RewriteRule ^log-out$ index.php?page=Logout&page=Logout [QSA,NC,L]
+# ------------------------------------------------------------------
+
+RewriteRule ^admission-dashboard$ index.php?page=Admission_dashboard&page=Admission_dashboard [QSA,NC,L]
+RewriteRule ^visa-dashboard$ index.php?page=Visa_dashboard&page=Visa_dashboard [QSA,NC,L]
+
+# All Clients ------------------------------------------------------
+RewriteRule ^all-clients$ index.php?page=All_clients&page=All_clients [QSA,NC,L]
+RewriteRule ^all-clients-27-28$ index.php?page=All_clients_27-28&page=All_clients_27-28 [QSA,NC,L]
+RewriteRule ^assign-programs$ index.php?page=Assign_programs&page=Assign_programs [QSA,NC,L]
+RewriteRule ^apply-programs$ index.php?page=Apply_programs&page=Apply_programs [QSA,NC,L]
+RewriteRule ^sops-programs$ index.php?page=SOPs_programs&page=SOPs_programs [QSA,NC,L]
+
+RewriteRule ^universities-and-program-for-2026-2027$ index.php?page=Universities_and_program_for_2026-2027&page=Universities_and_program_for_2026-2027 [QSA,NC,L]
+RewriteRule ^universities-and-programs$ index.php?page=Universities_and_programs&page=Universities_and_programs [QSA,NC,L]
+RewriteRule ^clients-previous-degree$ index.php?page=Clients_previous_degree&page=Clients_previous_degree [QSA,NC,L]
+
+RewriteRule ^clients-case$ index.php?page=Clients_case&page=Clients_case [QSA,NC,L]
+
+RewriteRule ^processing-team$ index.php?page=Processing_team&page=Processing_team [QSA,NC,L]
+RewriteRule ^sops-team$ index.php?page=Sops_team&page=Sops_team [QSA,NC,L]
+
+RewriteRule ^dream-apply$ index.php?page=Dream_apply&page=Dream_apply [QSA,NC,L]
+RewriteRule ^direct-apply$ index.php?page=Direct_apply&page=Direct_apply [QSA,NC,L]
+RewriteRule ^direct-pre-enrollment-apply$ index.php?page=Direct_pre_enrollment_apply&page=Direct_pre_enrollment_apply [QSA,NC,L]
+RewriteRule ^pre-enrollment-universities$ index.php?page=Pre_enrollment_universities&page=Pre_enrollment_universities [QSA,NC,L]
+RewriteRule ^register-CEnT-S$ index.php?page=Register_CEnT-S&page=Register_CEnT-S [QSA,NC,L]
+RewriteRule ^cimea-apply$ index.php?page=Cimea_apply&page=Cimea_apply [QSA,NC,L]
+
+RewriteRule ^admission-documents$ index.php?page=Admission_documents&page=Admission_documents [QSA,NC,L]
+RewriteRule ^client-checklist$ index.php?page=Client_checklist&page=Client_checklist [QSA,NC,L]
+# ------------------------------------------------------------------
+
+
+# Balance Amount --------------------------------------------------------
+RewriteRule ^balance-amount$ index.php?page=Balance_amount&page=Balance_amount [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# Add Uni Date --------------------------------------------------------
+RewriteRule ^universities-opening$ index.php?page=Universities_opening&page=Universities_opening [QSA,NC,L]
+RewriteRule ^universities-requirements$ index.php?page=Universities_requirements&page=Universities_requirements [QSA,NC,L]
+# ------------------------------------------------------------------
+# Add FAQs Section --------------------------------------------------------
+RewriteRule ^faqs-section$ index.php?page=FAQs_section&page=FAQs_section [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# Filters --------------------------------------------------------
+RewriteRule ^dov-checklist$ index.php?page=DOV_checklist&page=DOV_checklist [QSA,NC,L]
+RewriteRule ^cimea-checklist$ index.php?page=Cimea_checklist&page=Cimea_checklist [QSA,NC,L]
+RewriteRule ^visa-checklist$ index.php?page=Visa_checklist&page=Visa_checklist [QSA,NC,L]
+
+RewriteRule ^direct-pre-enrollment$ index.php?page=Direct_pre_enrollment&page=Direct_pre_enrollment [QSA,NC,L]
+RewriteRule ^direct-universities-apply$ index.php?page=Direct_universities_apply&page=Direct_universities_apply [QSA,NC,L]
+RewriteRule ^dream-id-apply$ index.php?page=Dream_ID_apply&page=Dream_ID_apply [QSA,NC,L]
+RewriteRule ^cimea-apply-clients$ index.php?page=Cimea_apply_clients&page=Cimea_apply_clients [QSA,NC,L]
+RewriteRule ^before-CEnT-S-test$ index.php?page=Before_CEnT-S_test&page=Before_CEnT-S_test [QSA,NC,L]
+RewriteRule ^after-CEnT-S-test$ index.php?page=After_CEnT-S_test&page=After_CEnT-S_test [QSA,NC,L]
+
+RewriteRule ^bachelor-universities$ index.php?page=Bachelor_universities&page=Bachelor_universities [QSA,NC,L]
+RewriteRule ^master-universities$ index.php?page=Master_universities&page=Master_universities [QSA,NC,L]
+RewriteRule ^mbbs-universities$ index.php?page=MBBS_universities&page=MBBS_universities [QSA,NC,L]
+RewriteRule ^phd-universities$ index.php?page=PHD_universities&page=PHD_universities [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# Visa Process --------------------------------------------------------
+RewriteRule ^visa-process$ index.php?page=Visa_process&page=Visa_process [QSA,NC,L]
+RewriteRule ^after-visa-process$ index.php?page=After_visa_process&page=After_visa_process [QSA,NC,L]
+RewriteRule ^imat-registration$ index.php?page=IMAT_registration&page=IMAT_registration [QSA,NC,L]
+# ------------------------------------------------------------------

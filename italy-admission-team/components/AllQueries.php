@@ -1,0 +1,13 @@
+<?php
+if($clientDetails!=''){
+	$whereCondition .= " AND (cl.client_id='".$clientDetails."' OR CONCAT('ID-', cl.client_id) LIKE '%".$clientDetails."%' OR cl.client_name LIKE '%".$clientDetails."%' OR cl.client_email LIKE '%".$clientDetails."%' OR cl.client_whatapp LIKE '%".$clientDetails."%' OR cl.client_country LIKE '%".$clientDetails."%' OR cl.client_applied LIKE '%".$clientDetails."%' OR cl.client_embassy LIKE '%".$clientDetails."%' OR icp.italy_program_name LIKE '%".$clientDetails."%' OR icp.italy_university_name LIKE '%".$clientDetails."%' )";
+}
+
+$countQuery = "SELECT COUNT(DISTINCT cl.client_id) as total from clients{$_SESSION['dbNo']} cl JOIN italy_clients_programs{$_SESSION['dbNo']} icp ON cl.client_id = icp.italy_clients_id WHERE $whereCondition ";
+$countResult = mysqli_query($con, $countQuery);
+$totalRecords = mysqli_fetch_assoc($countResult)['total'];
+$totalPages = ceil($totalRecords / $limit);
+
+$clientData = "SELECT cl.client_id, cl.client_intake_year, cl.create_date, cl.client_process_status, cl.client_name, cl.client_whatapp, cl.client_email, cl.client_convert_status, cl.client_country, cl.client_applied, cl.client_countryfrom, cl.client_embassy, cl.client_pay_remaining_status, cl.client_pay_confirm_status, cl.ack_confirm_status, cl.client_pro_confirm_status, cl.client_document_status, icp.italy_clients_id, icp.italy_program_assign, icp.italy_info_client_status, icp.italy_applied_status, icp.italy_direct_info_client_status, icp.italy_direct_applied_status, icp.italy_pre_info_client_status, icp.italy_pre_applied_status, icp.italy_program_status, icp.italy_client_pro_id, icp.italy_document_collection_note from clients{$_SESSION['dbNo']} cl JOIN italy_clients_programs{$_SESSION['dbNo']} icp ON cl.client_id = icp.italy_clients_id WHERE $whereCondition GROUP BY cl.client_id ORDER BY client_id DESC LIMIT $limit OFFSET $offset ";
+$clientData_ex = mysqli_query($con,$clientData);
+?>

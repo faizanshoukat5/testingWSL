@@ -1,0 +1,54 @@
+# Created By: Muhammad Safdar
+# Dated: Jan 01, 2024
+# Purpose: HTACCESS
+# Project: WSL Consultants CMS
+# Denying Directory Access
+
+Order Deny,Allow
+# Deny from all
+
+# Allow access from specific IP addresses
+# Allow from 43.248.13.90
+# Allow from 154.208.62.230
+# Allow from 154.208.62.229
+# Allow from 154.208.62.228
+# Allow from 154.208.62.227
+# Allow from 154.208.62.226
+# Allow from 154.208.62.225
+
+RewriteEngine on
+# Basic links --------------------------------------------------------
+RewriteRule ^dashboard$ index.php?page=Dashboard&page=Dashboard [QSA,NC,L]
+RewriteRule ^change-password$ index.php?page=Change_password&page=Change_password [QSA,NC,L]
+RewriteRule ^profile-setting$ index.php?page=Profile_setting&page=Profile_setting [QSA,NC,L]
+RewriteRule ^log-out$ index.php?page=Logout&page=Logout [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# All Clients ------------------------------------------------------
+RewriteRule ^all-clients$ index.php?page=All_clients&page=All_clients [QSA,NC,L]
+RewriteRule ^pre-enrollment-clients$ index.php?page=Pre_enrollment_clients&page=Pre_enrollment_clients [QSA,NC,L]
+RewriteRule ^apply-programs$ index.php?page=Apply_programs&page=Apply_programs [QSA,NC,L]
+
+RewriteRule ^dream-apply$ index.php?page=Dream_apply&page=Dream_apply [QSA,NC,L]
+RewriteRule ^direct-apply$ index.php?page=Direct_apply&page=Direct_apply [QSA,NC,L]
+RewriteRule ^direct-pre-enrollment-apply$ index.php?page=Direct_pre_enrollment_apply&page=Direct_pre_enrollment_apply [QSA,NC,L]
+RewriteRule ^register-CEnT-S$ index.php?page=Register_CEnT-S&page=Register_CEnT-S [QSA,NC,L]
+RewriteRule ^cimea-apply$ index.php?page=Cimea_apply&page=Cimea_apply [QSA,NC,L]
+
+RewriteRule ^admission-documents$ index.php?page=Admission_documents&page=Admission_documents [QSA,NC,L]
+RewriteRule ^universities-requirements$ index.php?page=Universities_requirements&page=Universities_requirements [QSA,NC,L]
+# ------------------------------------------------------------------
+
+# FIlters --------------------------------------------------------
+RewriteRule ^direct-pre-enrollment$ index.php?page=Direct_pre_enrollment&page=Direct_pre_enrollment [QSA,NC,L]
+RewriteRule ^direct-universities-apply$ index.php?page=Direct_universities_apply&page=Direct_universities_apply [QSA,NC,L]
+RewriteRule ^dream-id-apply$ index.php?page=Dream_ID_apply&page=Dream_ID_apply [QSA,NC,L]
+RewriteRule ^cimea-apply-clients$ index.php?page=Cimea_apply_clients&page=Cimea_apply_clients [QSA,NC,L]
+RewriteRule ^before-CEnT-S-test$ index.php?page=Before_CEnT-S_test&page=Before_CEnT-S_test [QSA,NC,L]
+RewriteRule ^after-CEnT-S-test$ index.php?page=After_CEnT-S_test&page=After_CEnT-S_test [QSA,NC,L]
+
+RewriteRule ^bachelor-universities$ index.php?page=Bachelor_universities&page=Bachelor_universities [QSA,NC,L]
+RewriteRule ^master-universities$ index.php?page=Master_universities&page=Master_universities [QSA,NC,L]
+RewriteRule ^mbbs-universities$ index.php?page=MBBS_universities&page=MBBS_universities [QSA,NC,L]
+RewriteRule ^master-universities$ index.php?page=PHD_universities&page=PHD_universities [QSA,NC,L]
+# ------------------------------------------------------------------

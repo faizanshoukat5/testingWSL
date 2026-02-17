@@ -57,12 +57,13 @@ $uniName = $_GET['university-name'] ?? 'all';
 				<tbody>
 					<?php
 					$sr=1;
+					$sr=1;
 					if($uniName!='all'){
-						$select_query = "SELECT * from austria_clients_programs".$_SESSION['dbNo']." WHERE status='1' AND close='1' AND aus_change_program_status='0' AND aus_clients_id='".$clientID."' AND aus_university_name='".$uniName."' ORDER BY aus_assign_status ASC";
+						$select_query = "SELECT * from austria_clients_programs".$_SESSION['dbNo']." WHERE status='1' AND close='1' AND aus_change_program_status='0' AND aus_clients_id='".$clientID."' AND aus_university_name='".$uniName."' AND aus_program_assign='".$_SESSION['user_id']."' ORDER BY aus_assign_status ASC";
 						$select_query_ex = mysqli_query($con,$select_query);
 					}
 					else{
-						$select_query = "SELECT * from austria_clients_programs".$_SESSION['dbNo']." WHERE status='1' AND close='1' AND aus_change_program_status='0' AND aus_clients_id='".$clientID."' ORDER BY aus_assign_status ASC";
+						$select_query = "SELECT * from austria_clients_programs".$_SESSION['dbNo']." WHERE status='1' AND close='1' AND aus_change_program_status='0' AND aus_clients_id='".$clientID."' AND aus_program_assign='".$_SESSION['user_id']."' ORDER BY aus_assign_status ASC";
 						$select_query_ex = mysqli_query($con,$select_query);
 					}
 					foreach ($select_query_ex as $rowPro) {

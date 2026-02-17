@@ -275,9 +275,32 @@ $uniName = $_GET['university-name'];
 							} ?>
 						<br>
 						<?php 
-						$uniQuery = "SELECT aus_uni_direct_apply, aus_uni_courier_apply from austria_add_universities".$_SESSION['dbNo']." WHERE close='1' AND status='1' AND aus_uni_name='".$rowPro['aus_university_name']."' AND aus_uni_degree='".$rowPro['aus_client_degree']."' ";
-						$uniQuery_ex = mysqli_query($con,$uniQuery);
-						$uniApplyRow = mysqli_fetch_assoc($uniQuery_ex);
+			// find university apply flags - try exact match first, then fall back to normalized/LIKE checks (handles name variants like BOKU)
+			$uniApplyRow = null;
+			$uniNameRaw = $rowPro['aus_university_name'];
+			$clientDegree = mysqli_real_escape_string($con, $rowPro['aus_client_degree']);
+			$uniNameEsc = mysqli_real_escape_string($con, $uniNameRaw);
+
+			$uniQuery = "SELECT aus_uni_direct_apply, aus_uni_courier_apply FROM austria_add_universities".$_SESSION['dbNo']." WHERE close='1' AND status='1' AND aus_uni_name='".$uniNameEsc."' AND aus_uni_degree='".$clientDegree."' LIMIT 1";
+			$uniQuery_ex = mysqli_query($con,$uniQuery);
+			$uniApplyRow = mysqli_fetch_assoc($uniQuery_ex);
+
+			if (empty($uniApplyRow)) {
+				$tokens = array();
+				if (preg_match('/\(([^)]+)\)/', $uniNameRaw, $m)) { $tokens[] = $m[1]; }
+				if (strpos($uniNameRaw, '-') !== false) { $parts = explode('-', $uniNameRaw); $tokens[] = trim(end($parts)); }
+				$tokens[] = preg_replace('/^the\\s+/i', '', $uniNameRaw);
+				$likes = array();
+				foreach ($tokens as $t) {
+					$t = trim($t);
+					if ($t !== '') { $likes[] = "aus_uni_name LIKE '%".mysqli_real_escape_string($con, $t)."%'"; }
+				}
+				if (!empty($likes)) {
+					$uniQuery2 = "SELECT aus_uni_direct_apply, aus_uni_courier_apply FROM austria_add_universities".$_SESSION['dbNo']." WHERE close='1' AND status='1' AND (".implode(' OR ', $likes).") AND aus_uni_degree='".mysqli_real_escape_string($con, $rowPro['aus_client_degree'])."' LIMIT 1";
+					$uniQuery_ex2 = mysqli_query($con, $uniQuery2);
+					$uniApplyRow = mysqli_fetch_assoc($uniQuery_ex2);
+				}
+			}
 						?>
 						<?php $btnCourierClass = $rowPro['aus_courier_proof_screenshot']!='' ? 'btn-success' : 'btn-outline-primary'; ?>
 						<?php $btnDirectClass = $rowPro['aus_direct_proof_screenshot']!='' ? 'btn-success' : 'btn-outline-primary'; 
